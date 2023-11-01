@@ -48,3 +48,4 @@
 ::1 - - [22/Sep/2023:04:17:23 +0000] "POST /v1/nba-hotel/signup HTTP/1.1" 500 29 "-" "PostmanRuntime/7.33.0"
 ::1 - - [22/Sep/2023:04:21:06 +0000] "POST /v1/nba-hotel/signup HTTP/1.1" - - "-" "PostmanRuntime/7.33.0"
 ::1 - - [22/Sep/2023:08:01:05 +0000] "POST /v1/nba-hotel/signin HTTP/1.1" 500 35 "-" "PostmanRuntime/7.33.0"
+::1 - - [01/Nov/2023:07:58:35 +0000] "POST /v1/nba-hotel/admin/create HTTP/1.1" - - "-" "PostmanRuntime/7.34.0"

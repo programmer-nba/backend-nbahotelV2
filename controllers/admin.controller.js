@@ -1,6 +1,7 @@
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 const Admin = require('../models/admin.schema');
+var dayjs = require("dayjs");
 
 module.exports.SignIn = (req, res) => {
 
@@ -43,4 +44,24 @@ module.exports.SignIn = (req, res) => {
         return res.status(500).send({ error: error });
     }
 
+}
+
+exports.createAdmin = (req, res) => {
+    try {
+        const data = {
+            username: req.body.username,
+            password: req.body.password,
+            roles: req.body.roles,
+            timestamps: req.body.timestamps
+        }
+        const new_admin = new Admin(data);
+        new_admin.save();
+        if (new_admin) {
+            console.log(new_admin);
+        } else {
+            console.log('Error')
+        }
+    } catch (error) {
+        console.log(error)
+    }
 }
