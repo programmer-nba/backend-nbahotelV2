@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String},
   telephone: {type: String, required: true,unique: true},
   telephone_inviter:{type: String,},
-  roles:[{type: mongoose.Schema.Types.ObjectId,ref:"Role",required:true}],
+  roles:{type: String, required: true,unique: true},
   service_name:{ type: String},
   service_id:{ type: String},
   approved:{type:Boolean,default:false}
