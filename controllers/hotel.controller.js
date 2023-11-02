@@ -3,7 +3,7 @@ const Category = require('../models/hotel.category.schema');
 const Amenities = require('../models/hotel.amenities.schema');
 const Highlights = require('../models/hotel.highlight.schema');
 const Certificates = require('../models/hotel.certificate.schema');
-const User = require('../models/user.schema');
+const User = require('../models/Member.schema');
 const {Hotel} = require('../models/hotel.schema');
 
 

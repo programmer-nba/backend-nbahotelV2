@@ -1,19 +1,19 @@
-const User = require('../models/user.schema');
+const Member = require('../models/member.schema');
 
-const checkDuplicateUsernameOrEmail = (req,res,next)=>{
-    //check Username 
-    User.findOne({telephone:req.body.telephone}).exec((err,user)=>{
+const checkDuplicateMembernameOrEmail = (req,res,next)=>{
+    //check Membername 
+    Member.findOne({telephone:req.body.telephone}).exec((err,Member)=>{
         if(err){
             res.status(500).send({message:err});
             return;
         }
-        if(user){
+        if(Member){
             res.status(400).send({status:false,message:"Failed! this phone number is already in use"});
             return;
         }
 
         //check Email
-        User.findOne({email:req.body.email}).exec((err,email)=>{
+        Member.findOne({email:req.body.email}).exec((err,email)=>{
             if(err){
                 res.status(500).send({message:err});
                 return;
@@ -28,7 +28,7 @@ const checkDuplicateUsernameOrEmail = (req,res,next)=>{
 }
 
 const verifySignUp = {
-    checkDuplicateUsernameOrEmail,
+    checkDuplicateMembernameOrEmail,
 };
 
 module.exports = verifySignUp;

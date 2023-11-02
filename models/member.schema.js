@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 
 // Define the schema for the HotelUser entity
-const UserSchema = new mongoose.Schema({
+const MemberSchema = new mongoose.Schema({
+  telephone: {type: String, required: true,unique: true},
+  password: { type: String, required: true },
+  name :{type :String,required: true } ,
   firstname:{ type: String},
   lastname:{ type: String},
-  password: { type: String, required: true },
   email: { type: String},
-  telephone: {type: String, required: true,unique: true},
   telephone_inviter:{type: String,},
   roles:{type: String, required: true},
   service_name:{ type: String},
@@ -15,6 +16,6 @@ const UserSchema = new mongoose.Schema({
 });
 
 
-const User = mongoose.model('User', UserSchema);
+const Member = mongoose.model('Member', MemberSchema);
 
-module.exports = User;
+module.exports = Member;
