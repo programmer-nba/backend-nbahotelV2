@@ -8,7 +8,7 @@ const Role = require('../models/role.schema');
 router.post("/", async (req, res) => {
   try {
     //manage user role
-    let userRole;
+    // let userRole;
 
     // if(req.body.roles == undefined || req.body.roles == null || req.body.roles == '') {
     //    const result =  await Role.findOne({name:"user"});
@@ -32,8 +32,9 @@ router.post("/", async (req, res) => {
       password: bcrypt.hashSync(req.body.password, 10),
       roles: req.body.roles,
     });
-
-    user.save()
+    user.save().then(savedUser=>{
+      res.status(200).send({'บันทึกผู้ใช้เรียบร้อย':savedUser});
+    })
   } catch (error) {
     console.log(error);
     return res.status(500).send({status: false, message: error});
