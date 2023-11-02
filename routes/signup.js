@@ -22,7 +22,10 @@ router.post("/", async (req, res) => {
     //         userRole = result._id;
     //     }
     // }
-
+    const checkuser = await User.findOne({telephone:req.body.telephone})
+    if(checkuser){
+      return res.status(400).send({message:`เบอร์${req.body.telephone} ซ้ำ กรุณาเปลี่ยนใหม่`}) 
+    }
     const user = new User({
       firstname: req.body.firstname,
       lastname: req.body.lastname,
@@ -32,8 +35,8 @@ router.post("/", async (req, res) => {
       password: bcrypt.hashSync(req.body.password, 10),
       roles: req.body.roles,
     });
-    user.save().then(savedUser=>{
-      res.status(200).send({'บันทึกผู้ใช้เรียบร้อย':savedUser});
+    await user.save().then(savedUser=>{
+      return res.status(200).send({status:true,'บันทึกผู้ใช้เรียบร้อย':savedUser});
     })
   } catch (error) {
     console.log(error);

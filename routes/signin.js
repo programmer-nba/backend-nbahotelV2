@@ -6,37 +6,44 @@ var router = express.Router();
 const User = require("../models/user.schema");
 const {default: axios} = require("axios");
 
-router.post('/',(req,res)=>{
+router.post('/', async(req,res)=>{
   try {
-    User.findOne({ telephone: req.body.telephone})
-  .then((user) => {
-    if (!user) {
+     const userdata = await User.findOne({telephone: req.body.telephone})
+  
+     // เช็คค่า user มีหรือเปล่า
+     if(!userdata){
       return res.status(400).send({ status: false, message: "User not found" });
-    }
-    bcrypt.compare(req.body.password, user.password).then((isMatch)=>{
-      if (!isMatch) {
-        return res.status(500).send({ status: false, message: "Invalid Password" });
-      }else{
-        if(user.roles=="admin"){
-          return res.status(200).send({ status: true, message:"ล็อคอินสำเร็จ admin" });
-        } else if (user.roles=="partner"){
-          return res.status(200).send({ status: true, message:"ล็อคอินสำเร็จ partner" });
-        } else if (user.roles=="member"){
-          return res.status(200).send({ status: true, message:"ล็อคอินสำเร็จ member" });
-        }
-        
+     }
+     //กำหนดตัวแปรpassword
+     const password = await bcrypt.compare(req.body.password,userdata.password)
+     //เช็คว่า password ตรงกันหรือเปล่า
+     if(!password){
+      return res.status(500).send({ status: false, message: "Invalid Password" });
+     }
+     //สร้าง signaturn
+     const {privateKey,publicKey} = crypto.generateKeyPairSync('ec', {namedCurve: 'sect239k1'});
+     const sign = crypto.createSign('SHA256')
+     sign.write(`${userdata}`)
+     sign.end();
+     var signature = sign.sign(privateKey, 'hex');
+     const payload = {
+      id: userdata._id,
+      firstname:userdata.firstname,
+      username: userdata.telephone,
+      roles : userdata.roles,
+      signature: signature
       }
-
-    })
-    //bcrypt
-    .catch((err) => {
-      return res.status(403).send({ status: false, message: err });
-    });
- 
-  })
-  .catch((err) => {
-    return res.status(403).send({ status: false, message: err });
-  })
+      const secretKey = process.env.SECRET_KEY;
+      const token = jwt.sign(payload,secretKey,{expiresIn:"12h"})
+      req.session.user = payload
+      req.session.save()
+      if(userdata.roles == "admin"){
+        return res.status(200).send({ status: true, data: payload, token: token})
+        } else if (userdata.roles =="partner"){
+        return res.status(200).send({ status: true, data: payload, token: token})
+        } else{
+        return res.status(200).send({ status: true, data: payload, token: token})
+        }
   } catch (error) {
     return res.status(500).send({status:false,error:error.message});
   }
