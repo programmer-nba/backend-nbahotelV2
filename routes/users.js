@@ -7,19 +7,19 @@ var partnerAuth = require('../authentication/partnerAuth');
 
 /* GET users listing. */
 router.get('/',adminAuth, User.getAll);
-router.get('/:id',partnerAuth, User.getById);
+// router.get('/:id',partnerAuth, User.getById);
 
-router.post('/me',sessionAuth,User.Me);
+// router.post('/me',sessionAuth,User.Me);
 
-router.post('/signout',sessionAuth,User.SignOut);
+// router.post('/signout',sessionAuth,User.SignOut);
 
-//update user
-router.patch('/update/:id',partnerAuth,User.Update);
+// //update user
+// router.patch('/update/:id',partnerAuth,User.Update);
 
-//approve user
-router.patch('/approved/:id',adminAuth,User.Approved);
+// //approve user
+// router.patch('/approved/:id',adminAuth,User.Approved);
 
-//create user service
-router.patch('/userservice/:id',partnerAuth,User.CreateUserService);
+// //create user service
+// router.patch('/userservice/:id',partnerAuth,User.CreateUserService);
 
 module.exports = router;

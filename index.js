@@ -116,13 +116,13 @@ const defaultLimit = rateLimit({
 //routes
 const { verify_user_email} = require('./authentication');
 var indexRouter = require('./routes/index');
-//var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/users');
 const prefix = '/v1/nba-hotel'
 app.use(prefix+'/',defaultLimit, indexRouter);
 //app.use(prefix+'/logger',defaultLimit, require('./routes/logger'));
 //app.use(prefix+'/whitelist',defaultLimit, require('./routes/whitelist'));
 //app.use(prefix+'/role',defaultLimit,require('./routes/roles'));
-//app.use(prefix+'/users',defaultLimit,usersRouter);
+app.use(prefix+'/users',defaultLimit,usersRouter);
 app.use(prefix+'/signup',defaultLimit,require('./routes/signup'));
 app.use(prefix+'/signin',defaultLimit,require('./routes/signin'));
 //app.use(prefix+'/admin',defaultLimit,require('./routes/admin'));
