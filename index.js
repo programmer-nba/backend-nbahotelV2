@@ -123,8 +123,10 @@ app.use(prefix+'/',defaultLimit, indexRouter);
 //app.use(prefix+'/whitelist',defaultLimit, require('./routes/whitelist'));
 //app.use(prefix+'/role',defaultLimit,require('./routes/roles'));
 app.use(prefix+'/users',defaultLimit,usersRouter);
-app.use(prefix+'/signup',defaultLimit,require('./routes/signup'));
-app.use(prefix+'/signin',defaultLimit,require('./routes/signin'));
+app.use(prefix+'/signup',defaultLimit,require('./routes/signup'))
+app.use(prefix+'/signin',defaultLimit,require('./routes/signin'))
+app.use(prefix+'/signout',defaultLimit,require('./routes/signout'))
+app.use(prefix+'/partner',defaultLimit,require('./routes/partner'));
 //app.use(prefix+'/admin',defaultLimit,require('./routes/admin'));
 //app.use(prefix+'/hotel',defaultLimit,require('./routes/hotel'));
 // app.use(prefix+'/room',defaultLimit,require('./routes/room'));

@@ -11,6 +11,7 @@ const partnerSchema = new mongoose.Schema({
   token: {type: String,required: false,default:''},
   webhook: {type: String,required: false,default:''},
   status:{type:Boolean,default: false},
+  approve :{type:String,default:'รออนุมัติ'}
 },
   {timestamps: true})
   const Partner = mongoose.model('Partner', partnerSchema)

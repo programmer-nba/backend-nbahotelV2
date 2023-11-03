@@ -5,13 +5,13 @@ verifyTokenpartner = async (req,res,next) => {
     try{
 
         let token = req.headers["token"]
-        let secret = req.headers["secret"]
+        const secretKey = "i#ngikanei;#aooldkhfa'"
         //เช็ค token
         if(!token){
             return res.status(403).send({status:false,message:'token หมดอายุ'});
         }
         // ทำการยืนยันสิทธิ์ token
-        const decoded =  await jwt.verify(token,secret)
+        const decoded =  await jwt.verify(token,secretKey)
         if(decoded.roles === "partner" || decoded.roles ==="admin"){
             req.users = decoded.data
             next();

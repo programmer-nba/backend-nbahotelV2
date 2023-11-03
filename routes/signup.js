@@ -6,8 +6,6 @@ var bcrypt = require("bcryptjs");
 const Admin = require("../models/admin.schema")
 const Partner = require("../models/partner.schema")
 const Member = require("../models/member.schema");
-const memberauth = require("../authentication/memberauth")
-const partnerAuth = require("../authentication/partnerAuth")
 const adminAuth = require("../authentication/adminAuth")
 
 //สร้าง function เช็คเลขโทรศัพท์ซ้ำ
@@ -23,7 +21,7 @@ async function Checktelephone(telephone){
 
 
 // api เพิ่มข้อมูล member
-router.post("/member",memberauth.verifyTokenmember, async (req, res) => {
+router.post("/member", async (req, res) => {
   try {
     const telephone = req.body.telephone
     //เช็คเบอร์ซ้ำ
@@ -55,7 +53,7 @@ router.post("/member",memberauth.verifyTokenmember, async (req, res) => {
   }
 });
 //เพิ่มข้อมูล partner
-router.post("/partner",partnerAuth.verifyTokenpartner, async (req, res) => {
+router.post("/partner", async (req, res) => {
   try {
     const telephone = req.body.telephone
     //เช็คเบอร์ซ้ำ

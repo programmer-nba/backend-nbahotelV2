@@ -78,11 +78,11 @@ router.post('/', async(req,res)=>{
      req.session.users = payload
      req.session.save()
       if(roles == "admin"){
-        return res.status(200).send({ status: true, data: payload, token: token,secretkey:secretKey})
+        return res.status(200).send({ status: true, data: payload, token: token})
       } else if (roles =="partner"){
-        return res.status(200).send({ status: true, data: payload, token: token,secretkey:secretKey})
+        return res.status(200).send({ status: true, data: payload, token: token})
       } else{
-        return res.status(200).send({ status: true, data: payload, token: token,secretkey:secretKey})
+        return res.status(200).send({ status: true, data: payload, token: token})
      }
   } catch (error) {
     return res.status(500).send({status:false,error:error.message});
