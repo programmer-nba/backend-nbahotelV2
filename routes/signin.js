@@ -73,16 +73,16 @@ router.post('/', async(req,res)=>{
       roles : roles,
       signature: signature
      }
-     const secretKey = process.env.SECRET_KEY;
+     const secretKey = process.env.SECRET_KEY
      const token = jwt.sign(payload,secretKey,{expiresIn:"4h"})
      req.session.users = payload
      req.session.save()
       if(roles == "admin"){
-        return res.status(200).send({ status: true, data: payload, token: token})
+        return res.status(200).send({ status: true, data: payload, token: token,secretkey:secretKey})
       } else if (roles =="partner"){
-        return res.status(200).send({ status: true, data: payload, token: token})
+        return res.status(200).send({ status: true, data: payload, token: token,secretkey:secretKey})
       } else{
-        return res.status(200).send({ status: true, data: payload, token: token})
+        return res.status(200).send({ status: true, data: payload, token: token,secretkey:secretKey})
      }
   } catch (error) {
     return res.status(500).send({status:false,error:error.message});

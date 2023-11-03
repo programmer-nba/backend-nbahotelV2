@@ -1,24 +1,30 @@
 const jwt = require('jsonwebtoken');
 
-const verifyToken = (req, res, next)=>{
-    const token = req.headers['token'];
-
-    if(!token){
-        return res.status(401).send({status: false, message: "Unauthorized"})
-    }
+const verifyTokenadmin = async(req, res, next)=>{
     try{
-        const decoded = jwt.verify(token, `${process.env.NBA_AUTH_API_SECRET}`);
-      
-        if(decoded.level !== 'admin'){
-            return res.status(403).send({status: false, message: 'ไม่มีสิทธิเข้าถึง'});
-        }else{
-            console.log('authenticated');
-            return next();
+
+        let token = req.headers["token"]
+        let secret = req.headers["secret"]
+        //เช็ค token
+        if(!token){
+            return res.status(403).send({status:false,message:'token หมดอายุ'});
         }
-    }catch(err){
-        return res.status(401).send({status: false, message: "Unauthorized"})
+
+        // ทำการยืนยันสิทธิ์ token
+        const decoded =  await jwt.verify(token,secret)
+        if(decoded.roles ==="admin"){
+            req.users = decoded.data
+            next();
+        }else{
+            res.status(400).send({status:false,message:"คุณไม่มีสิทธิ่ในการใช้งาน"})
+        }
+        
+        
+    }catch (err){
+        return res.status(500).send({error:err})
     }
 
 }
 
-module.exports = verifyToken;
+
+module.exports = verifyTokenadmin;
