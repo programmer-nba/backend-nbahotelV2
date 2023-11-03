@@ -235,3 +235,4 @@
 ::1 - - [03/Nov/2023:04:39:44 +0000] "POST /v1/nba-hotel/signup/admin HTTP/1.1" 400 114 "-" "PostmanRuntime/7.34.0"
 ::1 - - [03/Nov/2023:04:45:13 +0000] "POST /v1/nba-hotel/signin HTTP/1.1" 200 618 "-" "PostmanRuntime/7.34.0"
 ::1 - - [03/Nov/2023:04:45:37 +0000] "POST /v1/nba-hotel/signup/admin HTTP/1.1" 400 104 "-" "PostmanRuntime/7.34.0"
+::1 - - [03/Nov/2023:06:54:49 +0000] "GET /v1/nba-hotel/users HTTP/1.1" 404 1679 "-" "PostmanRuntime/7.34.0"
