@@ -1,4 +1,4 @@
-const User = require('../models/user.schema');
+const Member = require('../models/member.schema');
 const {Hotel} = require('../models/hotel.schema');
 const Session = require('../models/session.schema');
 const jwt = require('jsonwebtoken');
@@ -6,11 +6,11 @@ const jwt = require('jsonwebtoken');
 module.exports.getAll = async (req,res)=>{
 
     try {
-        const user = await User.find();
-        if(!user){
-            return res.status(404).send('No User');
+        const member = await Member.find();
+        if(!member){
+            return res.status(404).send('No Member');
         }
-        return res.status(200).send({status:true,data:user});
+        return res.status(200).send({status:true,data:member});
         
     } catch (error) {
         return res.status(500).send({status:error,error:error.message})
