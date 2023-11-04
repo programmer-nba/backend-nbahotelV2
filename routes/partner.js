@@ -7,6 +7,9 @@ const adminAuth = require('../authentication/adminAuth');
 const Admin = require("../models/admin.schema")
 const Partner = require("../models/partner.schema")
 const Member = require("../models/member.schema");
+const bcrypt = require("bcryptjs")
+//เรียกใช้ function เช็คชื่อและเบอร์โทรศัพท์
+const checkalluser = require("../functions/check-alluser")
 
 //เรียกข้อมูลทั้งหมด
 router.get('/',adminAuth, async(req,res)=>{
@@ -15,38 +18,22 @@ router.get('/',adminAuth, async(req,res)=>{
         if(!partnerdata){
             return res.status(404).send({status:false,message:"ไม่มีข้อมูล partner"})
         }
-        return res.status(200).send(partnerdata)
+        return res.status(200).send({status:true,data:partnerdata})
     }catch (error) {
         return res.status(500).send({status:false,error:error.message});
     }
 })
 
-//ค้นหาข้อมูลเฉพาะ telephone
+//ค้นหาข้อมูลเฉพาะ id
 router.get('/:id',adminAuth, async(req,res)=>{
     try{
         const id = req.params.id
-        const partnerdata = await Partner.findOne({telephone:id})
+        const partnerdata = await Partner.findOne({id:id})
 
         if(!partnerdata){
             return res.status(404).send({status:false,message:"หาข้อมูลไม่เจอ partner"})
         }
-        return res.status(200).send(partnerdata)
-    }
-    catch(error){
-        return res.status(500).send({status:false,error:error.message});
-    }
-})
-
-//เรียกข้อมูลการอนุมัติ
-router.get('/approve/:id',adminAuth, async(req,res)=>{
-    try{
-        const id = req.params.id
-        const partnerdata = await Partner.find({approve:id})
-
-        if(!partnerdata){
-            return res.status(404).send({status:false,message:"หาข้อมูลไม่เจอ partner"})
-        }
-        return res.status(200).send(partnerdata)
+        return res.status(200).send({status:true,data:partnerdata})
     }
     catch(error){
         return res.status(500).send({status:false,error:error.message});
@@ -57,7 +44,12 @@ router.get('/approve/:id',adminAuth, async(req,res)=>{
 router.put('/approve/:id',adminAuth, async(req,res)=>{
     try{
         const id = req.params.id
-        const approvepartner = await Partner.findByIdAndUpdate(id,{approve:"อนุมัติ"},{ new: true })
+        const newStatus = {
+            statusapprove: 'อนุมัติ',
+            timestamps: new Date()
+          };
+          
+        const approvepartner = await Partner.findByIdAndUpdate({ _id: id },{ $push: { approve: newStatus },status:true },{ new: true })
         if(!approvepartner){
             return res.status(404).send({status:false,message:"id ที่ส่งมาไม่มีในข้อมูล partner"})
         }
@@ -72,7 +64,12 @@ router.put('/approve/:id',adminAuth, async(req,res)=>{
 router.put('/unapprove/:id',adminAuth, async(req,res)=>{
     try{
         const id = req.params.id
-        const approvepartner = await Partner.findByIdAndUpdate(id,{approve:"ไม่อนุมัติ"},{ new: true })
+        const newStatus = {
+            statusapprove: 'ไม่อนุมัติ',
+            timestamps: new Date()
+          };
+
+        const approvepartner = await Partner.findByIdAndUpdate({ _id: id },{ $push: { approve: newStatus } },{ new: true })
         if(!approvepartner){
             return res.status(404).send({status:false,message:"id ที่ส่งมาไม่มีในข้อมูล partner"})
         }
@@ -82,16 +79,7 @@ router.put('/unapprove/:id',adminAuth, async(req,res)=>{
         return res.status(500).send({status:false,error:error.message});
     }
 })
-//สร้าง function เช็คเลขโทรศัพท์ซ้ำ
-async function Checktelephone(telephone){
-    const checkAdmin = await Admin.findOne({telephone:telephone})
-    if(checkAdmin) return true
-    const checkPartner = await Partner.findOne({telephone:telephone})
-    if(checkPartner) return true
-    const checkMember = await Member.findOne({telephone:telephone})
-    if(checkMember) return true    
-    return false
-}
+
 
 //แก้ไขข้อมูล partner
 router.put('/:id',adminAuth, async(req,res)=>{
@@ -100,21 +88,30 @@ router.put('/:id',adminAuth, async(req,res)=>{
         const telephone = req.body.telephone
         //เช็คเลขซ้ำ
 
-        const checkofpartner = await Partner.findOne({telephone:telephone})
+        const checkofpartner = await Partner.findOne({_id:id})
+        if(!checkofpartner){
+            return res.status(400).send({status:false,message:`หาข้อมูลไม่เจอ`})
+        }
         //ถ้าหา เบอร์โทรศัพท์ เหมือนกับที่ ส่งมาแสดงว่าตัวเดียวกัน
         if(telephone != checkofpartner.telephone)
         {
-            const Check = await Checktelephone(telephone).then((status)=>{return status})
+            const Check = await  checkalluser.Checktelephone(telephone).then((status)=>{return status})
             if(Check === true){
                 return res.status(400).send({status:false,message:`เบอร์ ${telephone} ซ้ำ กรุณาเปลี่ยนใหม่`})
             }
         }
-        const password = req.body.password
+        const password = bcrypt.hashSync(req.body.password, 10)
         const name = req.body.name
+        ////ถ้าหา เบอร์โทรศัพท์ เหมือนกับที่ ส่งมาแสดงว่าตัวเดียวกัน
+        if(name != checkofpartner.name){
+            const Checkname = await checkalluser.Checknames(name).then((status)=>{return status})
+            if(Checkname === true){
+                return res.status(400).send(({status:false,message:`ชื่อ${name}ซ้ำ กรุณาเปลี่ยนใหม่`}))
+            }
+        }
         const companyname = req.body.companyname
         const level = req.body.level
-        const approve = req.body.approve
-        if(!telephone||!password||!name||!companyname||!level||!approve){
+        if(!telephone||!password||!name||!companyname||!level){
             return res.status(400).send({status:false,message:'คุณส่งข้อมูล partner มาไม่ครบ'})
         }
         const partnerdata = {
@@ -122,8 +119,7 @@ router.put('/:id',adminAuth, async(req,res)=>{
             password :password,
             name : name,
             companyname: companyname,
-            level : level,
-            approve: approve 
+            level : level
         }
         const editpartner = await Partner.findByIdAndUpdate(id,partnerdata,{ new: true })
         if(!editpartner){

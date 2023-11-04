@@ -62,6 +62,12 @@ router.post('/', async(req,res)=>{
     } else if(checksignin === "Invalid Password"){
       return res.status(500).send({ status: false, message: "Invalid Password" })
     }
+    if(roles=== "partner"){
+      if(checksignin.status === false){
+        return res.status(500).send({ status: false, message: "ยังไม่สามารถล็อคอินได้ เนื่องจากยังไม่ได้อนุมัติ" })
+      }
+    }
+    
      //สร้าง signaturn
      const {privateKey,publicKey} = crypto.generateKeyPairSync('ec', {namedCurve: 'sect239k1'});
      const sign = crypto.createSign('SHA256')

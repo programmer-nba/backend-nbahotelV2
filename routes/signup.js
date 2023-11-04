@@ -1,37 +1,36 @@
 var express = require("express");
 var router = express.Router();
-var bcrypt = require("bcryptjs");
+var bcrypt = require("bcryptjs")
 
 //เรียก schema  
 const Admin = require("../models/admin.schema")
 const Partner = require("../models/partner.schema")
 const Member = require("../models/member.schema");
 const adminAuth = require("../authentication/adminAuth")
-
-//สร้าง function เช็คเลขโทรศัพท์ซ้ำ
-async function Checktelephone(telephone){
-  const checkAdmin = await Admin.findOne({telephone:telephone})
-  if(checkAdmin) return true
-  const checkPartner = await Partner.findOne({telephone:telephone})
-  if(checkPartner) return true
-  const checkMember = await Member.findOne({telephone:telephone})
-  if(checkMember) return true    
-  return false
-}
+//เรียกใช้ function เช็คชื่อและเบอร์โทรศัพท์
+const checkalluser = require("../functions/check-alluser")
 
 
 // api เพิ่มข้อมูล member
 router.post("/member", async (req, res) => {
   try {
     const telephone = req.body.telephone
+    const name = req.body.name
     //เช็คเบอร์ซ้ำ
-    const Check = await Checktelephone(telephone).then((status)=>{
+    const Check = await checkalluser.Checktelephone(telephone).then((status)=>{
       return status
     })
     if(Check === true){
       return res.status(400).send({status:false,message:`เบอร์ ${telephone} ซ้ำ กรุณาเปลี่ยนใหม่`})
     }
-     
+    
+    const Checkname = await checkalluser.Checknames(name).then((status)=>{
+      return status
+    })
+    if(Checkname=== true){
+      return res.status(400).send({status:false,message:`ชื่อ ${name} ซ้ำ กรุณาเปลี่ยนใหม่`})
+    }
+
     // รับค่า req 
     const Memberdata = new Member({
       telephone: telephone,
@@ -56,14 +55,22 @@ router.post("/member", async (req, res) => {
 router.post("/partner", async (req, res) => {
   try {
     const telephone = req.body.telephone
+    const name = req.body.name
     //เช็คเบอร์ซ้ำ
-    const Check = await Checktelephone(telephone).then((status)=>{
+    const Check = await checkalluser.Checktelephone(telephone).then((status)=>{
       return status
     })
     if(Check === true){
       return res.status(400).send({status:false,message:`เบอร์ ${telephone} ซ้ำ กรุณาเปลี่ยนใหม่`})
     }
-     
+
+    const Checkname = await checkalluser.Checknames(name).then((status)=>{
+      return status
+    })
+    if(Checkname=== true){
+      return res.status(400).send({status:false,message:`ชื่อ ${name} ซ้ำ กรุณาเปลี่ยนใหม่`})
+    }
+
     // รับค่า req 
     const Partnerdata = new Partner({
       telephone: telephone,
@@ -86,14 +93,21 @@ router.post("/partner", async (req, res) => {
 router.post("/admin",adminAuth, async (req, res) => {
   try {
     const telephone = req.body.telephone
+    const name = req.body.name
     //เช็คเบอร์ซ้ำ
-    const Check = await Checktelephone(telephone).then((status)=>{
+    const Check = await checkalluser.Checktelephone(telephone).then((status)=>{
       return status
     })
     if(Check === true){
       return res.status(400).send({status:false,message:`เบอร์ ${telephone} ซ้ำ กรุณาเปลี่ยนใหม่`})
     }
-     
+
+    const Checkname = await checkalluser.Checknames(name).then((status)=>{
+      return status
+    })
+    if(Checkname=== true){
+      return res.status(400).send({status:false,message:`ชื่อ ${name} ซ้ำ กรุณาเปลี่ยนใหม่`})
+    }
     // รับค่า req 
     const Admindata = new Admin({
       telephone: telephone,

@@ -11,11 +11,13 @@ verifyTokenmember = async (req,res,next) => {
         if(!token){
             return res.status(403).send({status:false,message:'token หมดอายุ'});
         }
+        
         // ทำการยืนยันสิทธิ์ token
         const decoded =  await jwt.verify(token,secretKey)
-        req.users = decoded.data
-        next();
-        
+        if(decoded.roles ==="member"){
+            req.users = decoded.data
+            next()    
+        }
     }catch (err){
         console.log(err)
         return res.status(500).send({error:err})

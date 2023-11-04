@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const MemberSchema = new mongoose.Schema({
   telephone: {type: String, required: true,unique: true},
   password: { type: String, required: true },
-  name :{type :String,required: true } ,
+  name :{type :String,required: true ,unique:true} ,
   firstname:{ type: String},
   lastname:{ type: String},
   email: { type: String},
