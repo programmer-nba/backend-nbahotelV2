@@ -3,20 +3,17 @@ const Category = require('../models/hotel.category.schema');
 const Amenities = require('../models/hotel.amenities.schema');
 const Highlights = require('../models/hotel.highlight.schema');
 const Certificates = require('../models/hotel.certificate.schema');
-const User = require('../models/Member.schema');
+const Member = require('../models/member.schema');
 const {Hotel} = require('../models/hotel.schema');
 
 
 //get all
 module.exports.GetAll = async (req,res) =>{
     try {
-
-        Hotel.find((err,hotel)=>{
-            if(err) return res.status(500).send({message: err});
-
-            return res.send({data:hotel});
-        })
-        
+        const hotel = await Hotel.find();
+        if(hotel){
+            return res.status(200).send(hotel)
+        } 
     } catch (error) {
         return res.status(500).send({message:error});
     }
@@ -25,11 +22,10 @@ module.exports.GetAll = async (req,res) =>{
 //get by id
 module.exports.GetById = async (req,res) =>{
     try {
-        const hotel = await Hotel.findById(req.params.id);
-        if(!hotel){
-            return res.status(404).send({message:'no hotel'});
-        }
-        return res.status(200).send(hotel);
+        const hotel = await Hotel.find();
+        if(hotel){
+            return res.status(200).send(hotel)
+        } 
         
     } catch (error) {
         return res.status(500).send({error:error.message});
@@ -70,18 +66,16 @@ module.exports.Create = async (req,res)=>{
             property_policies: req.body.property_policies,
             other_information : req.other_information
         })
-
-        hotel.save(async (err,result)=>{
-            if(err){
-                return res.status(500).send({message:err});
-            }
-            //update user service
-            userService = {
-                service_name:'hotel',
-                service_id:result._id,
-            }
-
-            User.findByIdAndUpdate(req.body.host_id,userService,{returnOriginal:false},(err,updateservice => {
+        const add = await Hotel.save()
+       
+        
+        //update user service
+        userService = {
+            service_name:'hotel',
+            service_id:result._id,
+        }
+        //รอทำต่อครับ
+        User.findByIdAndUpdate(req.body.host_id,userService,{returnOriginal:false},(err,updateservice => {
                 if(err){
                     return res.status(500).send({status:false,error:err.message});
                 }
@@ -89,7 +83,7 @@ module.exports.Create = async (req,res)=>{
                 return res.status(200).send({status:true,data:result,service:updateservice});
             }));
 
-        })
+            return res.status(200).send(add)
 
     } catch (error) {
         return res.status(500).send({message:error});

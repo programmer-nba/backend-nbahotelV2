@@ -128,7 +128,7 @@ app.use(prefix+'/signin',defaultLimit,require('./routes/signin'))
 app.use(prefix+'/signout',defaultLimit,require('./routes/signout'))
 app.use(prefix+'/partner',defaultLimit,require('./routes/partner'))
 app.use(prefix+'/admin',defaultLimit,require('./routes/admin'))
-//app.use(prefix+'/hotel',defaultLimit,require('./routes/hotel'));
+app.use(prefix+'/hotel',defaultLimit,require('./routes/hotel'));
 // app.use(prefix+'/room',defaultLimit,require('./routes/room'));
 // app.use(prefix+'/upload',defaultLimit,require('./routes/upload'));
 // app.use(prefix+'/booking',defaultLimit,require('./routes/booking'));

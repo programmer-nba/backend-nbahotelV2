@@ -2,33 +2,30 @@ const Amenities = require('../models/hotel.amenities.schema');
 
 module.exports.GetAll = async (req,res) =>{
     try {
-        const amenities = await Amenities.find();
+        const amenities = await Amenities.find()
         if(amenities){
-            return res.status(200).send(amenities);
+            return res.status(200).send(amenities)
         }
     } catch (error) {
-        return res.status(500).send({message:error.message});
+        return res.status(500).send({message:error.message})
     }
 }
+
 
 //ceate Catetory
 module.exports.Create= async (req,res) =>{
     try {
-        
         const data = {
             name: req.body.name,
             description : req.body.description
         }
-        const amenities = new Amenities(data);
-        amenities.save((err,result)=>{
-            if(err){
-               return res.status(500).send({message:err.message});
-            }
-            return res.status(200).send(result);
-        })
-
+        const amenities = new Amenities(data)
+        const add =await amenities.save()
+        if(add){
+            return res.status(200).send(add)
+        }            
     } catch (error) {
-        return res.status(500).send({message:err.message});
+        return res.status(500).send({message:error.message})
         
     }
     
@@ -43,31 +40,19 @@ module.exports.Update = async (req,res) => {
             description : req.body.description
         }
 
-       Amenities.findOneAndUpdate({_id:id},data,{returnOriginal:false},(err,result)=>{
-            if(err){
-                return res.status(500).send({message:err.message});
-            }
-
-                res.send(result);
-            
-        })
+       const edit = await Amenities.findOneAndUpdate({_id:id},data,{returnOriginal:false})
+        res.status(200).send(edit)
     } catch (error) {
-        return res.status(500).send({message:error.message});
+        return res.status(500).send({message:error.message})
     }
 }
 
 //delete Amenities
 module.exports.Delete = async (req,res) => {
     try {
-      Amenities.findOneAndDelete({_id:req.params.id},null,((err,result) =>{
-            if(err){
-                return res.status(500).send({message:err.message});
-            }
-            res.status(200).send(result);
-        }))
+        const deletes = await Amenities.findOneAndDelete({_id:req.params.id})
+        res.status(200).send(deletes)
     } catch (error) {
-
         return res.status(500).send({message:error.message});
-        
     }
 }
