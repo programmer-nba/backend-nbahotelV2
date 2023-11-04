@@ -82,6 +82,7 @@ router.put('/unapprove/:id',adminAuth, async(req,res)=>{
         return res.status(500).send({status:false,error:error.message});
     }
 })
+
 //สร้าง function เช็คเลขโทรศัพท์ซ้ำ
 async function Checktelephone(telephone){
     const checkAdmin = await Admin.findOne({telephone:telephone})
