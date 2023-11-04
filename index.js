@@ -140,7 +140,7 @@ app.use(prefix+'/hotel',defaultLimit,require('./routes/hotel'));
 // app.use(prefix+'/report',defaultLimit,require('./routes/report'));
 // app.use(prefix+'/billing',defaultLimit,require('./routes/billing'));
 // app.use(prefix+'/task',defaultLimit,require('./routes/task'));
-// app.use(prefix+'/increment',defaultLimit,require('./routes/increment'));
+//app.use(prefix+'/increment',defaultLimit,require('./routes/increment'));
 
 //partner api
 var apiPartnerAuth = require('./authentication/apiPartnerAuth');

@@ -68,22 +68,15 @@ module.exports.Create = async (req,res)=>{
         })
         const add = await Hotel.save()
        
-        
         //update user service
         userService = {
             service_name:'hotel',
-            service_id:result._id,
+            service_id:add._id,
         }
         //รอทำต่อครับ
-        User.findByIdAndUpdate(req.body.host_id,userService,{returnOriginal:false},(err,updateservice => {
-                if(err){
-                    return res.status(500).send({status:false,error:err.message});
-                }
-                
-                return res.status(200).send({status:true,data:result,service:updateservice});
-            }));
+        updateservice = await Member.findByIdAndUpdate(req.body.host_id,userService,{returnOriginal:false})
+        return res.status(200).send({status:true,data:add,service:updateservice})
 
-            return res.status(200).send(add)
 
     } catch (error) {
         return res.status(500).send({message:error});
