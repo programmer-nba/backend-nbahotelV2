@@ -24,10 +24,8 @@ router.post("/member", async (req, res) => {
       return res.status(400).send({status:false,message:`เบอร์ ${telephone} ซ้ำ กรุณาเปลี่ยนใหม่`})
     }
     
-    const Checkname = await checkalluser.Checknames(name).then((status)=>{
-      return status
-    })
-    if(Checkname=== true){
+    const Checkname = await Member.findOne({name:name})
+    if(Checkname){
       return res.status(400).send({status:false,message:`ชื่อ ${name} ซ้ำ กรุณาเปลี่ยนใหม่`})
     }
 
@@ -63,11 +61,8 @@ router.post("/partner", async (req, res) => {
     if(Check === true){
       return res.status(400).send({status:false,message:`เบอร์ ${telephone} ซ้ำ กรุณาเปลี่ยนใหม่`})
     }
-
-    const Checkname = await checkalluser.Checknames(name).then((status)=>{
-      return status
-    })
-    if(Checkname=== true){
+    const Checkname = await Partner.findOne({name:name})
+    if(Checkname){
       return res.status(400).send({status:false,message:`ชื่อ ${name} ซ้ำ กรุณาเปลี่ยนใหม่`})
     }
 
@@ -102,10 +97,8 @@ router.post("/admin",adminAuth, async (req, res) => {
       return res.status(400).send({status:false,message:`เบอร์ ${telephone} ซ้ำ กรุณาเปลี่ยนใหม่`})
     }
 
-    const Checkname = await checkalluser.Checknames(name).then((status)=>{
-      return status
-    })
-    if(Checkname=== true){
+    const Checkname = await Admin.findOne({name:name})
+    if(Checkname){
       return res.status(400).send({status:false,message:`ชื่อ ${name} ซ้ำ กรุณาเปลี่ยนใหม่`})
     }
     // รับค่า req 

@@ -87,17 +87,17 @@ router.patch('/security/:id',adminAuth,RoomSecurity.Update)
 router.delete('/security/:id',adminAuth,RoomSecurity.Delete)
 
 // main room routes
-router.get('/',adminAuth,Room.GetAll)
-router.get('/:id',adminAuth,Room.GetById)
-router.get('/hotel/:id',partnerAuth.verifyTokenpartner,Room.GetHotelRoom)
-router.get('/hotel/:id/:roomId',partnerAuth.verifyTokenpartner,Room.GetById)// ยังไม่เข้าใจ
-router.post('/hotel/:id',partnerAuth.verifyTokenpartner,Room.Create)
-router.patch('/hotel/:id/:roomId/update',partnerAuth.verifyTokenpartner,Room.Update)
-router.patch('/hotel/:id/changestatus/:roomId',partnerAuth.verifyTokenpartner,Room.ChangeStatus)
+router.get('/',Room.GetAll)
+router.get('/:id',Room.GetById)
+router.get('/hotel/:id',Room.GetHotelRoom)
+router.get('/hotel/:id/:roomId',Room.GetById)// ยังไม่เข้าใจ
+router.post('/hotel/:id',partnerAuth.onlypartner,Room.Create)
+router.patch('/hotel/:id/:roomId/update',partnerAuth.onlypartner,Room.Update)
+router.patch('/hotel/:id/changestatus/:roomId',partnerAuth.onlypartner,Room.ChangeStatus)
 router.delete('/:id',adminAuth,Room.Delete)
 
 // //picture management routes
-router.post('/hotel/:id/:roomId/picture',partnerAuth.verifyTokenpartner,Upload.Create)
-router.delete('/hotel/:id/:roomId/picture/:pictureid',partnerAuth.verifyTokenpartner,Upload.Delete)
+router.post('/hotel/:id/:roomId/picture',partnerAuth.onlypartner,Upload.Create)
+router.delete('/hotel/:id/:roomId/picture/:pictureid',partnerAuth.onlypartner,Upload.Delete)
 
 module.exports = router;

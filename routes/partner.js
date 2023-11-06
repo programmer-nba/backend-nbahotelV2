@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 // ตรวจสอบสมาชิก
-const adminAuth = require('../authentication/adminAuth');
+const adminAuth = require('../authentication/adminAuth')
+const paramsAuth = require('../authentication/partnerAuth')
 // schema
 const Admin = require("../models/admin.schema")
 const Partner = require("../models/partner.schema")
@@ -10,6 +11,8 @@ const Member = require("../models/member.schema");
 const bcrypt = require("bcryptjs")
 //เรียกใช้ function เช็คชื่อและเบอร์โทรศัพท์
 const checkalluser = require("../functions/check-alluser")
+
+
 
 //เรียกข้อมูลทั้งหมด
 router.get('/',adminAuth, async(req,res)=>{
@@ -25,7 +28,7 @@ router.get('/',adminAuth, async(req,res)=>{
 })
 
 //ค้นหาข้อมูลเฉพาะ id
-router.get('/:id',adminAuth, async(req,res)=>{
+router.get('/:id',paramsAuth.verifyTokenpartner, async(req,res)=>{
     try{
         const id = req.params.id
         const partnerdata = await Partner.findOne({id:id})
@@ -82,7 +85,7 @@ router.put('/unapprove/:id',adminAuth, async(req,res)=>{
 
 
 //แก้ไขข้อมูล partner
-router.put('/:id',adminAuth, async(req,res)=>{
+router.put('/:id',paramsAuth.onlypartner, async(req,res)=>{
     try{
         const id = req.params.id
         const telephone = req.body.telephone
@@ -95,9 +98,9 @@ router.put('/:id',adminAuth, async(req,res)=>{
         //ถ้าหา เบอร์โทรศัพท์ เหมือนกับที่ ส่งมาแสดงว่าตัวเดียวกัน
         if(telephone != checkofpartner.telephone)
         {
-            const Check = await  checkalluser.Checktelephone(telephone).then((status)=>{return status})
-            if(Check === true){
-                return res.status(400).send({status:false,message:`เบอร์ ${telephone} ซ้ำ กรุณาเปลี่ยนใหม่`})
+            const Checkname = await Partner.findOne({name:name})
+            if(Checkname){
+                return res.status(400).send({status:false,message:`ชื่อ ${name} ซ้ำ กรุณาเปลี่ยนใหม่`})
             }
         }
         const password = bcrypt.hashSync(req.body.password, 10)

@@ -43,7 +43,7 @@ router.patch('/certificate/:id',adminAuth,Certificate.Update)
 router.delete('/certificate/:id',adminAuth,Certificate.Delete)
 
 //จัดการข้อมูลโรงแรม
-router.get('/',adminAuth,Hotel.GetAll)
+router.get('/',Hotel.GetAll)
 router.get('/:id',partnerAuth.verifyTokenpartner,Hotel.GetById)
 router.post('/:id',partnerAuth.verifyTokenpartner, Hotel.Create)
 router.patch('/:id/:userId',partnerAuth.verifyTokenpartner,Hotel.Update)

@@ -63,9 +63,9 @@ router.put('/:id',adminAuth, async (req,res)=>{
         if(name != checkofadmin.name){
             
             // เช็คชื่อซ้ำ
-            const Checkname = await checkalluser.Checknames(name).then((status)=>{return status})
-            if(Checkname === true){
-                return res.status(400).send({status:false,message:` ชื่อ${name}ซ้ำ กรุณาเปลี่ยนใหม่`})
+            const Checkname = await Admin.findOne({name:name})
+            if(Checkname){
+                return res.status(400).send({status:false,message:`ชื่อ ${name} ซ้ำ กรุณาเปลี่ยนใหม่`})
             }
         }
 

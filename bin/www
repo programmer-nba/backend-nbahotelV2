@@ -51,12 +51,12 @@ const {Booking} = require('../models/booking.schema');
 const {Hotel} = require('../models/hotel.schema');
 const {Task}= require('../models/task.schema');
 
-  Booking.watch().on('change',data=> {
-    console.log('new booking');
+  // Booking.watch().on('change',data=> {
+  //   console.log('new booking');
   
-      io.emit('newbooking',{event:'newbooking'})
+  //     io.emit('newbooking',{event:'newbooking'})
 
-  })
+  // })
 
   Hotel.watch().on('change',data=> {
     console.log('new hotel');
