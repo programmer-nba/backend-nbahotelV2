@@ -3,8 +3,8 @@ var router = express.Router();
 const Task = require('../controllers/task.controller');
 const partnerAuth = require('../authentication/partnerAuth');
 
-router.get('/:id',partnerAuth,Task.getTask);
-router.patch('/:id/done',partnerAuth,Task.doneTask);
-router.delete('/:id',partnerAuth,Task.deleteTask);
+router.get('/:id',partnerAuth.verifyTokenpartner,Task.getTask);
+router.patch('/:id/done',partnerAuth.verifyTokenpartner,Task.doneTask);
+router.delete('/:id',partnerAuth.verifyTokenpartner,Task.deleteTask);
 
 module.exports = router;

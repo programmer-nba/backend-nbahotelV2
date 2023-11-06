@@ -11,14 +11,8 @@ router.post('/',async (req,res) => {
     increment.pre('save',()=>{
         
     })
-  increment.save((err,data)=>{
-    if(err){
-        return res.status(500).send(err);
-    }
-    return res.status(200).send(data);
-
-  });
-       
+  const add = await increment.save()
+  return res.status(200).send(add)
 } catch (error) {
         return res.status(500).send(error);
 }

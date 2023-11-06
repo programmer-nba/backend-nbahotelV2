@@ -20,13 +20,8 @@ module.exports.Create= async (req,res) =>{
             description : req.body.description
         }
         const furnitureType = new FurnitureType(data);
-        furnitureType.save((err,result)=>{
-            if(err){
-               return res.status(500).send({message:err.message});
-            }
-            return res.status(200).send(result);
-        })
-
+        const add = await furnitureType.save()
+        return res.status(200).send(add)
     } catch (error) {
         return res.status(500).send({message:err.message});
         
@@ -43,14 +38,8 @@ module.exports.Update = async (req,res) => {
             description : req.body.description
         }
 
-       FurnitureType.findOneAndUpdate({_id:id},data,{returnOriginal:false},(err,result)=>{
-            if(err){
-                return res.status(500).send({message:err.message});
-            }
-
-                res.send(result);
-            
-        })
+        const edit = await FurnitureType.findOneAndUpdate({_id:id},data,{returnOriginal:false})
+        return res.status(200).send(edit)
     } catch (error) {
         return res.status(500).send({message:error.message});
     }
@@ -59,12 +48,8 @@ module.exports.Update = async (req,res) => {
 //delete FurnitureType
 module.exports.Delete = async (req,res) => {
     try {
-      FurnitureType.findOneAndDelete({_id:req.params.id},null,((err,result) =>{
-            if(err){
-                return res.status(500).send({message:err.message});
-            }
-            res.status(200).send(result);
-        }))
+        await FurnitureType.findOneAndDelete({_id:req.params.id})
+        return res.status(200).send('ลบข้อมูลประเภทเฟอร์นิเจอร์')
     } catch (error) {
 
         return res.status(500).send({message:error.message});

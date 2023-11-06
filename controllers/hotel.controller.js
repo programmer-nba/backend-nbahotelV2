@@ -22,7 +22,7 @@ module.exports.GetAll = async (req,res) =>{
 //get by id
 module.exports.GetById = async (req,res) =>{
     try {
-        const hotel = await Hotel.find();
+        const hotel = await Hotel.find()
         if(hotel){
             return res.status(200).send(hotel)
         } 
@@ -66,28 +66,26 @@ module.exports.Create = async (req,res)=>{
             property_policies: req.body.property_policies,
             other_information : req.other_information
         })
-        const add = await Hotel.save()
+        const add = await hotel.save()
        
         //update user service
-        userService = {
-            service_name:'hotel',
-            service_id:add._id,
-        }
-        //รอทำต่อครับ
-        updateservice = await Member.findByIdAndUpdate(req.body.host_id,userService,{returnOriginal:false})
-        return res.status(200).send({status:true,data:add,service:updateservice})
+        // userService = {
+        //     service_name:'hotel',
+        //     service_id:add._id,
+        // }
+        // //รอทำต่อครับ
+        // updateservice = await Member.findByIdAndUpdate(req.body.host_id,userService,{returnOriginal:false})
+        return res.status(200).send({status:true,data:add})
 
 
     } catch (error) {
-        return res.status(500).send({message:error});
+        return res.status(500).send({message:error.message})
     }
 }
 
 module.exports.Update = async (req,res) =>{
 
     const id = req.params.id;
-    console.log(req.body);
-
     try {
 
     const hotel = await Hotel.findById(id);
@@ -97,7 +95,7 @@ module.exports.Update = async (req,res) =>{
     }
 
     //hotel amenities
-    var amenities = [];
+    let amenities = [];
     if(req.body.amenities){
 
        for(let id of req.body.amenities){
@@ -115,7 +113,7 @@ module.exports.Update = async (req,res) =>{
     }
 
     //hotel highlight
-    var highlights =[];
+    let highlights =[]
     if(req.body.highlight){
 
       for(let id of req.body.highlight){
@@ -134,7 +132,7 @@ module.exports.Update = async (req,res) =>{
   
 
     //hotel certificates
-    var certificates = [];
+    let certificates = [];
     if(req.body.certificate){
 
              for(let id of req.body.certificate){
@@ -178,18 +176,12 @@ module.exports.Update = async (req,res) =>{
             other_information : req.body.other_information?req.body.other_information:hotel.other_information
         }
 
-        console.log(data);
         
-        Hotel.findByIdAndUpdate(id,data,{returnOriginal:false},(error,result)=>{
-            if(error){
-                return res.send({message:error.message});
-            }
-            return res.status(200).send(result);
-        })
-        
+        const  edit = await Hotel.findByIdAndUpdate(id,data,{returnOriginal:false} )
+        return res.status(200).send(edit); 
     } catch (error) {
 
-        return res.status(500).send({message:error});
+        return res.status(500).send({message:error.message});
         
     }
 }
@@ -201,12 +193,8 @@ module.exports.Delete = async (req,res) =>{
         if(!hotel){
             return res.status(404).send({message:`Hotel id ${id} not found`});
         }
-        hotel.remove((err,result)=>{
-            if(err){
-                return res.status(500).send({message:err});
-            }
-            return res.send(result);
-        })
+        const deletehotel = await Hotel.deleteOne({_id:id})
+        return res.status(200).send({status:true,message:"ลบข้อมูล hotel สำเร็จ"})
     } catch (error) {
         return res.status(500).send({message:error});
     }

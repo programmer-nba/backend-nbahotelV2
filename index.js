@@ -119,28 +119,28 @@ var indexRouter = require('./routes/index')
 
 const prefix = '/v1/nba-hotel'
 app.use(prefix+'/',defaultLimit, indexRouter);
-//app.use(prefix+'/logger',defaultLimit, require('./routes/logger'));
-//app.use(prefix+'/whitelist',defaultLimit, require('./routes/whitelist'));
-//app.use(prefix+'/role',defaultLimit,require('./routes/roles'));
+app.use(prefix+'/logger',defaultLimit, require('./routes/logger'));
+app.use(prefix+'/whitelist',defaultLimit, require('./routes/whitelist'));
+app.use(prefix+'/role',defaultLimit,require('./routes/roles'));
 app.use(prefix+'/member',defaultLimit,require('./routes/member'))
 app.use(prefix+'/signup',defaultLimit,require('./routes/signup'))
 app.use(prefix+'/signin',defaultLimit,require('./routes/signin'))
 app.use(prefix+'/signout',defaultLimit,require('./routes/signout'))
 app.use(prefix+'/partner',defaultLimit,require('./routes/partner'))
 app.use(prefix+'/admin',defaultLimit,require('./routes/admin'))
-app.use(prefix+'/hotel',defaultLimit,require('./routes/hotel'));
-// app.use(prefix+'/room',defaultLimit,require('./routes/room'));
-// app.use(prefix+'/upload',defaultLimit,require('./routes/upload'));
-// app.use(prefix+'/booking',defaultLimit,require('./routes/booking'));
-// app.use(prefix+'/checkin',defaultLimit,require('./routes/checkin'));
-// app.use(prefix+'/payment',defaultLimit,require('./routes/payment'));
-// app.use(prefix+'/province',defaultLimit,require('./routes/province'));
-// app.use(prefix+'/invite',defaultLimit,require('./routes/invitation'));
-// app.use(prefix+'/calendar',defaultLimit,require('./routes/calendar'))
-// app.use(prefix+'/report',defaultLimit,require('./routes/report'));
-// app.use(prefix+'/billing',defaultLimit,require('./routes/billing'));
-// app.use(prefix+'/task',defaultLimit,require('./routes/task'));
-//app.use(prefix+'/increment',defaultLimit,require('./routes/increment'));
+app.use(prefix+'/hotel',defaultLimit,require('./routes/hotel'))
+app.use(prefix+'/room',defaultLimit,require('./routes/room'))
+app.use(prefix+'/upload',defaultLimit,require('./routes/upload'));
+app.use(prefix+'/booking',defaultLimit,require('./routes/booking'));
+app.use(prefix+'/checkin',defaultLimit,require('./routes/checkin'));
+app.use(prefix+'/payment',defaultLimit,require('./routes/payment'));
+app.use(prefix+'/province',defaultLimit,require('./routes/province'));
+app.use(prefix+'/invite',defaultLimit,require('./routes/invitation'));
+app.use(prefix+'/calendar',defaultLimit,require('./routes/calendar'))
+app.use(prefix+'/report',defaultLimit,require('./routes/report'));
+app.use(prefix+'/billing',defaultLimit,require('./routes/billing'));
+app.use(prefix+'/task',defaultLimit,require('./routes/task'));
+app.use(prefix+'/increment',defaultLimit,require('./routes/increment'));
 
 //partner api
 var apiPartnerAuth = require('./authentication/apiPartnerAuth');

@@ -156,17 +156,9 @@ module.exports.Create = async (req, res) => {
             status: { name: status.name, description: status.description }, //avariable,busy,maintenance
             
         }
-
-     
         const room = new Room(data);
-        room.save((err, result) => {
-            if (err) {
-               
-                return res.status(500).send({ message: err });
-            }
-            return res.send(result);
-        })
-
+        const add = await room.save()
+        return res.status(200).send(add)
     } catch (error) {
         console.log(error);
         return res.status(500).send({ message: error });
@@ -177,7 +169,6 @@ module.exports.Create = async (req, res) => {
 
 //get all
 module.exports.GetAll = async (req, res) => {
-
     try {
         const result = await Room.find();
         if (!result) {
@@ -213,16 +204,9 @@ module.exports.GetHotelRoom = async (req,res) => {
 //get by id
 module.exports.GetById = async (req, res) => {
     const id = req.params.roomId;
-    console.log(id);
     try {
-
-        Room.findById(id, null, (err, result) => {
-            if (err) {
-                return res.status(500).send({ message: err });
-            }
-            return res.send(result);
-        })
-
+        const find = await Room.findById(id)
+        return res.status(200).send(find);
     } catch (error) {
         res.send(error);
     }
@@ -377,16 +361,10 @@ module.exports.Update = async (req, res) => {
             // status
             status: status, //avariable,busy,maintenance
         }
-
-        Room.findByIdAndUpdate(id, updateData, { returnOriginal: false }, (err, result) => {
-            if (err) {
-                return res.send({ message: err.message });
-            }
-            return res.send(result);
-        })
-
+        const edit = await Room.findByIdAndUpdate(id, updateData, { returnOriginal: false })
+        return res.status(200).send(edit)
     } catch (error) {
-        return res.send({ message: error.message });
+        return res.send({ message: error.message })
     }
 
 }
@@ -396,12 +374,8 @@ module.exports.Delete = async (req, res) => {
     const id = req.params.id;
     try {
 
-        Room.findByIdAndDelete(id, null, (err, result) => {
-            if (err) {
-                return res.status(500).send({ message: err.message });
-            }
-            return res.status(200).send({ message: `room ${id} has been deleted`, result: result });
-        })
+        await Room.findByIdAndDelete(id, null)
+        return res.status(200).send('ลบข้อมูลห้องสำเร็จ')
 
     } catch (error) {
         return res.status(500).send({ message: err.message });
@@ -428,13 +402,8 @@ module.exports.ChangeStatus = async (req, res) => {
             }
 
             console.log(updateData);
-
-            Room.findByIdAndUpdate(id, { status: updateData }, { returnOriginal: false }, (err, result) => {
-                if (err) {
-                    return res.status(500).send(err);
-                }
-                return res.send(result);
-            })
+            const edit= await Room.findByIdAndUpdate(id, { status: updateData }, { returnOriginal: false })
+            res.status(200).send(edit)            
         }
 
     } catch (error) {

@@ -37,15 +37,8 @@ module.exports.Create = async (req, res) => {
         }
 
         if(result){
-
           const data = hotel.image_url.concat(reqFiles);
-            
-            Hotel.findByIdAndUpdate(id,{image_url:data},{returnOriginal:false},(err,result)=>{
-                if(err){
-                    return res.status(500).send({ message:err});
-                }
-                console.log('result',result);
-            })
+          Hotel.findByIdAndUpdate(id,{image_url:data},{returnOriginal:false})
         }
 
         res.status(201).send({
@@ -59,7 +52,7 @@ module.exports.Create = async (req, res) => {
   } catch (error) {
     res.status(500).send({ message: "มีบางอย่างผิดพลาด", status: false });
   }
-};
+}
 
 //delele picture
 
@@ -69,22 +62,16 @@ module.exports.Delete = async (req,res) => {
 
   try {
 
-    const hotel = await Hotel.findById(hotelid);
+  const hotel = await Hotel.findById(hotelid);
 
-    if(!hotel){
+  if(!hotel){
       return res.status(404).send(`Room ${hotelid} not found`);
-    }
+  }
 
-   await deleteFile(pictureid);
-
-    const updatedata = hotel.image_url.filter(image => image !== pictureid);
-
-    Hotel.findByIdAndUpdate(hotelid,{image_url:updatedata},{returnOriginal:false},(err,hotel)=>{
-      if(err){
-        return res.status(500).send(err);
-      }
-      return res.status(200).send(hotel.image_url);
-    })
+  await deleteFile(pictureid);
+  const updatedata = hotel.image_url.filter(image => image !== pictureid);
+  await Hotel.findByIdAndUpdate(hotelid,{image_url:updatedata},{returnOriginal:false})
+  return res.status(200).send(hotel.image_url)
 
   } catch (error) {
     return res.status(500).send(error);

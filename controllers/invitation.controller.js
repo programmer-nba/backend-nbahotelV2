@@ -31,13 +31,8 @@ module.exports.Create = async (req,res) =>{
         }
 
         const invitation = new Invitation(data);
-        invitation.save((err,result)=>{
-            if(err){
-                return res.status(500).send({message:err});
-            }
-            return res.send(result);
-        });
-
+        const add = await invitation.save()
+        return res.status(200).send(add)
     } catch (error) {
         res.status(500).send({message:error});
     }
@@ -95,14 +90,9 @@ module.exports.Recieve = async (req,res) =>{
 
             console.log(data);
             const admin= new Admin(data);
-
-            admin.save((err,admin)=>{
-                if(err){
-                    return res.status(500).send({message:err});
-                }
-                sendmail(decoded.email,password)
-                return res.status(200).send(admin);
-            })
+            const add = await admin.save()
+            sendmail(decoded.email,password)
+            return res.status(200).send(add)
         })
     }
 

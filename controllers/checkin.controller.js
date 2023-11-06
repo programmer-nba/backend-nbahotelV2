@@ -8,8 +8,7 @@ module.exports.VerifyCheckedInUser = async (req,res) =>{
     try {
         
    const booking = await Booking.findOne({
-    $and:[{ref_number:req.body.ref_number},{customer_tel:req.body.customer_tel}]
-}).exec()
+    $and:[{ref_number:req.body.ref_number},{customer_tel:req.body.customer_tel}]})
 
         if(!booking || booking.length<=0){
             return res.status(404).send({message:'no booking found'});
@@ -97,19 +96,13 @@ try {
                 date:new Date()
             })
             console.log('updateData',updateData);
-            Booking.findByIdAndUpdate(booking._id,{status:updateData},{returnDocument:'after'},(err,data)=>{
-                if(err){
-                    console.log('update fail');
-                }
-                console.log('booking was updated',data);
-            })
-
-             // callback 
-          const partner = await Partner.findById(booking.partner_id);
-      
-          if(!partner){
-            return res.status(400).send({message:'Partner not found'});
-          }
+            const edit =  await Booking.findByIdAndUpdate(booking._id,{status:updateData},{returnDocument:'after'})
+            //console.log('booking was updated',data);
+            // callback 
+            const partner = await Partner.findById(booking.partner_id);   
+            if(!partner){
+                return res.status(400).send({message:'Partner not found'});
+            }
 
           const url = partner.webhook;
           const data = {
@@ -121,10 +114,7 @@ try {
               return true;
           })
         
-        }
-
-         
-            
+        }   
         return res.status(200).send(response.data);
 
     }).catch(function (error) {
@@ -159,42 +149,28 @@ module.exports.CheckOut = async (req,res) =>{
                 date:new Date()
         })
        
-       Booking.findOneAndUpdate({_id:booking_id},{status:status},{returnDocument:'after'},async (err,result)=>{
-            if(err){
-                return res.status(500).send({message:err.message});
-            }
-          console.log(result);
-            // callback 
-          const partner = await Partner.findById(current_booking.partner_id);
-
-          if(!partner){
+        const edit = await Booking.findOneAndUpdate({_id:booking_id},{status:status},{returnDocument:'after'})
+        //console.log(edit)
+        const partner = await Partner.findById(current_booking.partner_id)
+        if(!partner){
             return res.status(400).send({message:'Partner not found'});
-          }
-
-          var axios = require('axios');
-  
-          const url = partner.webhook;
-          const data = {
-              ref_number: result.ref_number,
-              status:'checked out',
-              message:'ลูกค้าเช็คเอาท์'
-          }
-          await axios.post(url,data).then((res)=>{
-
-            console.log({res,message:'send message successfully'});
-
-          }).catch(err =>{
-              console.log(err);
-          })
-          //end callback
-
-            return res.status(200).send({
-               
-                _id:result._id,
-                message:'checkout successfully'
-            });
-        })    
-        
+        }
+        var axios = require('axios');
+        const url = partner.webhook;
+        const data = {
+            ref_number: result.ref_number,
+            status:'checked out',
+            message:'ลูกค้าเช็คเอาท์'
+        }
+        await axios.post(url,data).then((res)=>{
+            //console.log({res,message:'send message successfully'})
+        }).catch(err =>{
+            console.log(err);
+        })
+        return res.status(200).send({
+            _id:edit._id,
+            message:'checkout successfully'
+        })
     } catch (error) {
         return res.status(500).send({message:error.message});
     }
@@ -219,13 +195,8 @@ module.exports.FakeCheckin = async (req, res) => {
              date:new Date()
          })
 
-        Booking.findByIdAndUpdate(booking._id,{status:updateData},{returnOriginal:false},(err,data)=>{
-            if(err){
-                console.log('update fail');
-            }
-            console.log('booking was updated',data);
-        })
-
+        const edit = await Booking.findByIdAndUpdate(booking._id,{status:updateData},{returnOriginal:false})
+        console.log('booking was updated',edit);
         return res.send('ok')
     } catch (error) {
         return res.status(500).send(error)
@@ -248,13 +219,8 @@ module.exports.FakeCheckout = async (req, res) => {
              date:new Date()
          })
          
-        Booking.findByIdAndUpdate(booking._id,{status:updateData},{returnOriginal:false},(err,data)=>{
-            if(err){
-                console.log('update fail');
-            }
-            console.log('booking was updated',data);
-        })
-
+        const edit = await Booking.findByIdAndUpdate(booking._id,{status:updateData},{returnOriginal:false})
+        console.log('booking was updated',edit)
         return res.send('ok')
     } catch (error) {
         return res.status(500).send(error)
@@ -277,13 +243,8 @@ module.exports.FakeAccept = async (req, res) => {
              date:new Date()
          })
          
-        Booking.findByIdAndUpdate(booking._id,{status:updateData},{returnOriginal:false},(err,data)=>{
-            if(err){
-                console.log('update fail');
-            }
-            console.log('booking was updated',data);
-        })
-
+        const edit = await Booking.findByIdAndUpdate(booking._id,{status:updateData},{returnOriginal:false})
+        console.log('booking was updated',edit)
         return res.send('ok')
     } catch (error) {
         return res.status(500).send(error)

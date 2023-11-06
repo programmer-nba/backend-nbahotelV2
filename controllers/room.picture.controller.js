@@ -48,12 +48,7 @@ module.exports.Create = async (req, res) => {
 
             const data = room.imageURl.concat(reqFiles);
 
-            Room.findByIdAndUpdate(id,{imageURl:data},{returnOriginal:false},(err,result)=>{
-                if(err){
-                    return res.status(500).send({ message:err});
-                }
-           
-            })
+            await Room.findByIdAndUpdate(id,{imageURl:data},{returnOriginal:false})
         }
 
         res.status(201).send({
@@ -84,16 +79,9 @@ module.exports.Delete = async (req,res) =>{
     }
 
     await deleteFile(pictureid);
-
     const updatedata = room.imageURl.filter(image => image !== pictureid);
-
-    Room.findByIdAndUpdate(roomid,{imageURl:updatedata},{returnOriginal:false},(err,room)=>{
-      if(err){
-        return res.status(500).send(err);
-      }
-      return res.status(200).send(room.imageURl);
-    })
-
+    const deleteimages= await Room.findByIdAndUpdate(roomid,{imageURl:updatedata},{returnOriginal:false})
+    return res.status(200).send(deleteimages.imageURl);
   } catch (error) {
     return res.status(500).send(error);
   }

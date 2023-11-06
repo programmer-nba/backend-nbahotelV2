@@ -19,13 +19,8 @@ module.exports.Create= async (req,res) =>{
             name: req.body.name,
         }
         const roleType = new RoleType(data);
-        roleType.save((err,result)=>{
-            if(err){
-               return res.status(500).send({message:err.message});
-            }
-            return res.status(200).send(result);
-        })
-
+        const add = await roleType.save()
+        return res.status(200).send(add)
     } catch (error) {
         return res.status(500).send({message:err.message});
         
@@ -40,15 +35,8 @@ module.exports.Update = async (req,res) => {
         const data = {
             name: req.body.name,
         }
-
-       RoleType.findOneAndUpdate({_id:id},data,{returnOriginal:false},(err,result)=>{
-            if(err){
-                return res.status(500).send({message:err.message});
-            }
-
-                res.send(result);
-            
-        })
+        const edit = await RoleType.findOneAndUpdate({_id:id},data,{returnOriginal:false})
+        return res.status(200).send(edit)
     } catch (error) {
         return res.status(500).send({message:error.message});
     }
@@ -57,12 +45,8 @@ module.exports.Update = async (req,res) => {
 //delete RoleType
 module.exports.Delete = async (req,res) => {
     try {
-      RoleType.findOneAndDelete({_id:req.params.id},null,((err,result) =>{
-            if(err){
-                return res.status(500).send({message:err.message});
-            }
-            res.status(200).send(result);
-        }))
+        await RoleType.findOneAndDelete({_id:req.params.id})
+        return res.status(200).send('ลบข้อมูลroleสำเร็จ')
     } catch (error) {
 
         return res.status(500).send({message:error.message});

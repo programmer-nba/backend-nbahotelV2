@@ -6,13 +6,13 @@ var partnerAuth = require('../authentication/partnerAuth');
 var apiPartnerAuth = require('../authentication/apiPartnerAuth');
 
 router.get('/all',adminAuth,Booking.GetAll);
-router.get('/:id',partnerAuth,Booking.getBookingByHotelId);
+router.get('/:id',partnerAuth.verifyTokenpartner,Booking.getBookingByHotelId);
 router.get('/range/:id',adminAuth,Booking.getBookingByRange);
-router.get('/:id/:bookingId',partnerAuth,Booking.getBookingById);
+router.get('/:id/:bookingId',partnerAuth.verifyTokenpartner,Booking.getBookingById);
 router.patch('/:id',adminAuth,Booking.Update); // date
 
 //accept
-router.patch('/accept/:id/:bookingId',partnerAuth,Booking.Accept);
-router.patch('/reject/:id/:bookingId',partnerAuth,Booking.Reject);
+router.patch('/accept/:id/:bookingId',partnerAuth.verifyTokenpartner,Booking.Accept);
+router.patch('/reject/:id/:bookingId',partnerAuth.verifyTokenpartner,Booking.Reject);
 
 module.exports = router;

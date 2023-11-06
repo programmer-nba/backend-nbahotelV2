@@ -20,16 +20,10 @@ module.exports.Create= async (req,res) =>{
             description : req.body.description
         }
         const roomSecurity = new RoomSecurity(data);
-        roomSecurity.save((err,result)=>{
-            if(err){
-               return res.status(500).send({message:err.message});
-            }
-            return res.status(200).send(result);
-        })
-
+        const add = await roomSecurity.save()
+        return res.status(200).send(add)
     } catch (error) {
         return res.status(500).send({message:err.message});
-        
     }
     
 }
@@ -42,15 +36,8 @@ module.exports.Update = async (req,res) => {
             name: req.body.name,
             description : req.body.description
         }
-
-       RoomSecurity.findOneAndUpdate({_id:id},data,{returnOriginal:false},(err,result)=>{
-            if(err){
-                return res.status(500).send({message:err.message});
-            }
-
-                res.send(result);
-            
-        })
+        const edit = await RoomSecurity.findOneAndUpdate({_id:id},data,{returnOriginal:false})
+        return res.status(200).send(edit)
     } catch (error) {
         return res.status(500).send({message:error.message});
     }
@@ -59,12 +46,8 @@ module.exports.Update = async (req,res) => {
 //delete RoomSecurity
 module.exports.Delete = async (req,res) => {
     try {
-      RoomSecurity.findOneAndDelete({_id:req.params.id},null,((err,result) =>{
-            if(err){
-                return res.status(500).send({message:err.message});
-            }
-            res.status(200).send(result);
-        }))
+        await RoomSecurity.findOneAndDelete({_id:req.params.id})
+        return res.status(200).send('ลบข้อมูลความปลอดภัยห้องสำเร็จ')
     } catch (error) {
 
         return res.status(500).send({message:error.message});

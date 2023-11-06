@@ -21,13 +21,8 @@ module.exports.Create= async (req,res) =>{
             service_time : req.body.service_time
         }
         const roomService = new RoomService(data);
-        roomService.save((err,result)=>{
-            if(err){
-               return res.status(500).send({message:err.message});
-            }
-            return res.status(200).send(result);
-        })
-
+        const add = await roomService.save()
+        return res.status(200).send(add)
     } catch (error) {
         return res.status(500).send({message:err.message});
         
@@ -44,15 +39,8 @@ module.exports.Update = async (req,res) => {
             description : req.body.description,
             service_time : req.body.service_time
         }
-
-       RoomService.findOneAndUpdate({_id:id},data,{returnOriginal:false},(err,result)=>{
-            if(err){
-                return res.status(500).send({message:err.message});
-            }
-
-              return  res.send(result);
-            
-        })
+        const edit = await RoomService.findOneAndUpdate({_id:id},data,{returnOriginal:false})
+        return res.status(200).send(edit)
     } catch (error) {
         return res.status(500).send({message:error.message});
     }
@@ -61,15 +49,9 @@ module.exports.Update = async (req,res) => {
 //delete RoomService
 module.exports.Delete = async (req,res) => {
     try {
-      RoomService.findOneAndDelete({_id:req.params.id},null,((err,result) =>{
-            if(err){
-                return res.status(500).send({message:err.message});
-            }
-          return  res.status(200).send(result);
-        }))
+        await RoomService.findOneAndDelete({_id:req.params.id})
+        return res.status(200).send('ลบข้อมูลบริการรูมเซอร์วิสสำเร็จ')
     } catch (error) {
-
-        return res.status(500).send({message:error.message});
-        
+        return res.status(500).send({message:error.message})
     }
 }
