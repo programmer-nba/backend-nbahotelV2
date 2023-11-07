@@ -49,7 +49,7 @@ onlypartner = async (req,res,next) => {
         console.log(err)
         return res.status(500).send({error :err})
     }
-};
+}
 const authpartner = {
     verifyTokenpartner,
     onlypartner

@@ -1,41 +1,16 @@
-const { Booking, validate_Booking } = require('../models/booking.schema');
+const Booking  = require('../models/booking.schema');
 const { Room } = require('../models/room.schema');
 const { Hotel } = require('../models/hotel.schema');
-const { Partner } = require('../models/partner.schema');
+const { Partner } = require('../models/partner.schema')
+const Member = require('../models/member.schema')
+const Payment = require('../models/prepayment.schema')
 
 const dayjs = require('dayjs');
 const CreateTask = require('../functions/task');
 const ValidateDate = require('../functions/datemangement')
 const jwt = require('jsonwebtoken');
 
-// module.exports.GetAll = async (req, res) => {
-//     try {
-//         const booking = await Booking.find({ $and: [{ confirm: 'confirmed' }] }, { _id: 1, createdAt: 1, ref_number: 1, hotel_id: 1, customer_name: 1, date_from: 1, date_to: 1, total_price: 1, cutoff_status: 1, status: 1 });
-//         const hotel = await Hotel.find({}, { _id: 1, name: 1 });
-//         if (!hotel) {
-//             return res.status(404).send({ message: 'Hotel not found' });
-//         }
 
-//         if (booking) {
-//             const data = booking.map(el => ({
-//                 booking_id: el._id,
-//                 date: el.createdAt,
-//                 ref_number: el.ref_number,
-//                 hotel_id: el.hotel_id,
-//                 hotel_name: (hotel.find(hotel => hotel._id == el.hotel_id).name),
-//                 customer_name: el.customer_name,
-//                 check_in_date: el.date_from,
-//                 check_out_date: el.date_to,
-//                 total_price: el.total_price,
-//                 cutoff_status: el.cutoff_status,
-//                 status: el.status
-//             }))
-//             return res.status(200).send(data);
-//         }
-//     } catch (error) {
-//         return res.status(500).send({ message: error.message });
-//     }
-// }
 
 // //get booking by range
 // module.exports.getBookingByRange = async (req, res) => {
@@ -313,4 +288,121 @@ const jwt = require('jsonwebtoken');
 //         return res.status(500).send({ message: error.message });
 //     }
 // }
+
+//สร้างข้อมูลการจอง
+module.exports.addbooking = async(req,res)=>{
+    try{
+        const member_id = req.body.member_id
+        const hotel_id = req.body.hotel_id
+        const room_id = req.body.room_id
+        const date_from = req.body.date_from
+        const date_to = req.body.date_to
+        const price = req.body.price
+        //เช็คว่ารับค่ามาหรือเปล่า
+        if(!member_id||!hotel_id||!room_id||!date_from||!date_to||!price){
+            res.status(400).send({message:'กรุณากรอกข้อมูลให้ครบ'})
+        }
+        //เช็คว่ามีข้อมูลใน member hotel room data หรือเปล่า
+        const member = await Member.findOne({id:member_id})
+        if(!member){
+            res.status(400).send({message:'หาข้อมูล member ไม่เจอ'})
+        }
+        const hotel = await Hotel.findOne({id:member_id})
+        if(!hotel){
+            res.status(400).send({message:'หาข้อมูล hotel ไม่เจอ'})
+        }
+        const room = await Room.findOne({id:room_id})
+        if(!room){
+            res.status(400).send({message:'หาข้อมูล room ไม่เจอ'})
+        }
+        const booking = new Booking({
+            member_id: member_id,
+            hotel_id : hotel_id,
+            room_id: room_id,
+            date_from:date_from,
+            date_to:date_to,
+            price:price
+        })
+        const add = await booking.save()
+        res.status(200).send(add)
+
+    }catch(error){
+        res.status(500).send({message:error.message})
+    }
+}
+
+//เรียกข้อมูลทั้งหมด
+module.exports.GetAll = async (req, res) => {
+    try {
+        const booking = await Booking.find();
+        return res.status(200).send(booking);
+        
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+}
+//เรียกข้อมูลการจองตาม id
+module.exports.GetByid = async (req, res) => {
+    try {
+        const id = req.params.id
+        const booking = await Booking.find({id:id});
+        return res.status(200).send(booking);
+        
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+}
+
+//เรียกข้อมูลการจองตาม hotel_id
+module.exports.GetByhotel = async (req, res) => {
+    try {
+        const hotel_id = req.params.id
+        const booking = await Booking.find({hotel_id:hotel_id});
+        return res.status(200).send(booking);
+        
+    } catch (error) {
+        return res.status(500).send({ message: error.message });
+    }
+}
+//เรียกข้อมูลการจองตาม room_id
+module.exports.GetByroom = async (req, res) => {
+    try {
+        const room_id = req.params.id
+        const booking = await Booking.find({room_id:room_id})
+        return res.status(200).send(booking);
+        
+    } catch (error) {
+        return res.status(500).send({ message: error.message })
+    }
+}
+//เรียกข้อมูลการจองตาม member
+module.exports.GetBymember = async (req, res) => {
+    try {
+        const member_id = req.params.id
+        const booking = await Booking.find({member_id:member_id})
+        return res.status(200).send(booking);
+        
+    } catch (error) {
+        return res.status(500).send({ message: error.message })
+    }
+}
+
+//partner อนุมัติการจองห้อง
+module.exports.AcceptBooking = async (req,res) =>{
+    try{
+        const id = req.params.id
+        const newStatus = {
+            statusbooking: 'รอชำระเงิน',
+            timestamps: new Date()
+          };
+        const edit = await Booking.findByIdAndUpdate({_id:id},{$push:{status:newStatus}},{new:true})
+        if(!edit){
+            return res.status(404).send({status:false,message:"id ที่ส่งมาไม่มีในข้อมูล Booking"})
+        }
+        return res.status(200).send({status:true,message:`ข้อมูล ${edit.id} ได้รับการอนุมัติแล้ว รอการชำระเงิน`,update:edit})
+    }catch (error){
+        return res.status(500).send({message: error.message})
+    }
+    
+}
 

@@ -22,7 +22,8 @@ verifyTokenmember = async (req,res,next) => {
         console.log(err)
         return res.status(500).send({error:err})
     }
-};
+}
+
 
 // isAdmin = (req,res,next)=>{
 //     Admin.findById(req.UserId).exec((err,user)=>{
