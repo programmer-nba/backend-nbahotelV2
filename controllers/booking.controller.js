@@ -405,4 +405,127 @@ module.exports.AcceptBooking = async (req,res) =>{
     }
     
 }
+//  partner ไม่อนุมัติห้อง
+module.exports.unacceptbooking = async (req,res)=>{
+    const id = req.params.id
+    const newStatus = {
+        statusbooking: 'ไม่อนุมัติห้อง',
+        timestamps: new Date()
+      };
+    const edit = await Booking.findByIdAndUpdate({_id:id},{$push:{status:newStatus}},{new:true})
+    if(!edit){
+        return res.status(404).send({status:false,message:"id ที่ส่งมาไม่มีในข้อมูล Booking"})
+    }
+    return res.status(200).send({status:true,message:`ข้อมูล ${edit.id} ไม่ได้รับการอนุมัติ กรุณาเลือกจองหัองพักใหม่`,update:edit})
+}
 
+
+//member ชำระเงิน
+module.exports.Payment = async (req,res) =>{
+    try{
+        
+        const id = req.params.id
+        const newStatus = {
+            statusbooking: 'ยีนยันการชำระเงิน',
+            timestamps: new Date()
+          }
+        const bookingdata = await Booking.findOne({_id:id})
+        if(!bookingdata){
+            return res.status(404).send({status:false,message:"id ที่ส่งมาไม่มีในข้อมูล Booking"})
+        }
+        
+        // เพิ่มหลักฐานการจ่ายเงิน
+                
+        const payment_number = bookingdata.id
+        
+        const hotel_id = bookingdata.hotel_id
+        //ค้นหา ชื่อ hotel 
+        const findhotel = await Hotel.findOne({id:hotel_id})
+        const hotel_name = findhotel.name 
+        const partner_id = "6549ab60571927db38729fd7"
+        const partner_name = "test4"
+       
+        const total_amount = bookingdata.price
+        const payment_date = Date.now()
+        const payment_status = "รอดำเนินการ"
+        const detail = {
+            booking_id : bookingdata._id,
+            ref_number : bookingdata.id,
+            check_out_date : "",
+            partner_id :partner_id,
+            total : total_amount
+        }
+        //เพิ่มรูปยังไม่มี
+        const slip_image = req.body.slip_image
+        const payment_type = req.body.payment_type
+        
+        //เพิ่มข้อมูล payment
+        const paymentdata = new Payment.PrePayment({
+            payment_number : payment_number,
+            hotel_id : hotel_id,
+            hotel_name:hotel_name,
+            partner_id:partner_id,
+            partner_name: partner_name,
+            total_amount:total_amount,
+            payment_date:payment_date,
+            payment_status:payment_status,
+            detail: detail,
+            slip_image:slip_image
+        })
+        //เพิ่มข้อมูล
+        const addpayment = await paymentdata.save()
+        //แก้ไขข้อมูล
+        const editpaymentid = await Booking.findByIdAndUpdate({_id:id},{$push:
+            {status:newStatus},
+            payment_id:addpayment.id,
+            payment_type:payment_type
+        },{new:true})
+        if(!editpaymentid){
+            return res.status(404).send({status:false,message:"id ที่ส่งมาไม่มีในข้อมูล Booking"})
+        }
+        return res.status(200).send({status:true,message:`ข้อมูล ${editpaymentid.id} ได้ส่งหลักฐานการชำระเงินเรียบร้อย แล้วรอยืนยันการชำระเงิน`,update:editpaymentid,payment:addpayment})
+
+    }catch(error){
+        return res.status(500).send({message:error.message})
+    }
+}
+
+// partner ยืนยันชำระเงิน 
+module.exports.confirmbookingpayment = async (req,res)=>{
+    const id = req.params.id
+    //เพิ่มสถานะ
+    const newStatus = {
+        statusbooking: 'จองห้องสำเร็จ',
+        timestamps: new Date()
+      }
+    //แก้ไขสถานะ payment
+    const payment_status = "โอนเรียบร้อย"
+    //เพิ่มสถานะ booking 
+    const editbooking = await Booking.findByIdAndUpdate({_id:id},{$push:{status:newStatus}},{new:true})
+    if(!editbooking){
+        return res.status(404).send({status:false,message:"id ที่ส่งมาไม่มีในข้อมูล Booking"})
+    }
+    const editpayment = await Payment.PrePayment.findByIdAndUpdate({_id:editbooking.payment_id},{payment_status:payment_status},{new:true})
+    if(!editpayment){
+        return res.status(404).send({status:false,message:"id ที่ส่งมาไม่มีในข้อมูล Payment"})
+    }
+    return res.status(200).send({status:true,message:`ข้อมูล ${editbooking.id} ได้รับการยืนยันการชำระเงินแล้ว จองห้องพักสำเร็จ`,booking:editbooking,payment:editpayment})
+}
+
+// partner ไม่ยืนยันการชำระเงิน
+module.exports.unconfirmbookingpayment = async (req,res)=>{
+    const id = req.params.id
+    //เพิ่มสถานะ
+    const newStatus = {
+        statusbooking: 'ชำระเงินไม่สำเร็จ',
+        timestamps: new Date()
+      }
+    //เพิ่มสถานะ booking 
+    const editbooking = await Booking.findByIdAndUpdate({_id:id},{$push:{status:newStatus}},{new:true})
+    if(!editbooking){
+        return res.status(404).send({status:false,message:"id ที่ส่งมาไม่มีในข้อมูล Booking"})
+    }
+    return res.status(200).send({status:true,message:`ข้อมูล ${editbooking.id} กรุณาส่งหลักฐานยืนยันการชำระเงินมาใหม่ เนื่องจาก partner ไม่เจอหลักฐานการชำระเงินของคุณ กรุณาชำระเงินใหม่`,booking:editbooking})
+}
+
+    

@@ -19,7 +19,8 @@ const bookingSchema = new mongoose.Schema({
    ],
    default: [{ statusapprove: 'รออนุมัติห้อง', timestamps: new Date()}]
  },
-  payment_id:{type:String}
+  payment_id:{type:String},
+  payment_type:{type:String}
   },
   {timestamps:true}
   );

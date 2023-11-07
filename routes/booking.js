@@ -31,7 +31,14 @@ router.get('/member/:id',Booking.GetBymember)
 
 //อนุมัติการจองห้อง
 router.put('/AcceptBooking/:id',Booking.AcceptBooking)
-
+//ไม่อนุมัติการจองห้อง
+router.put('/UnacceptBooking/:id',Booking.unacceptbooking)
+//จ่ายเงิน
+router.put('/paymentBooking/:id',Booking.Payment)
+//ยืนยันการจ่ายเงิน
+router.put('/confirmBookingPayment/:id',Booking.confirmbookingpayment)
+//ไม่ยืนยันการจ่ายเงิน
+router.put('/Unconfirmbookingpayment/:id',Booking.unconfirmbookingpayment)
 
 
 module.exports = router;
