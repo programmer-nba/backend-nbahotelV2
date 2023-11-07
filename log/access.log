@@ -529,3 +529,4 @@
 ::1 - - [07/Nov/2023:08:44:42 +0000] "PUT /v1/nba-hotel/booking/AcceptBooking/6549f594597fc31748550264 HTTP/1.1" 200 773 "-" "PostmanRuntime/7.34.0"
 ::1 - - [07/Nov/2023:08:44:54 +0000] "PUT /v1/nba-hotel/booking/paymentBooking/6549f594597fc31748550264 HTTP/1.1" 200 1740 "-" "PostmanRuntime/7.34.0"
 ::1 - - [07/Nov/2023:08:45:02 +0000] "PUT /v1/nba-hotel/booking/Unconfirmbookingpayment/6549f594597fc31748550264 HTTP/1.1" 200 1348 "-" "PostmanRuntime/7.34.0"
+::1 - - [07/Nov/2023:08:52:48 +0000] "GET /v1/nba-hotel/room HTTP/1.1" 200 9913 "-" "PostmanRuntime/7.34.0"

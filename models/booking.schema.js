@@ -23,7 +23,7 @@ const bookingSchema = new mongoose.Schema({
   payment_type:{type:String}
   },
   {timestamps:true}
-  );
+  )
   
   const Booking = mongoose.model('Booking', bookingSchema);
 
