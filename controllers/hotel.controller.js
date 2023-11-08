@@ -1,12 +1,12 @@
 const dayjs = require('dayjs');
-const Category = require('../models/hotel.category.schema');
-const Amenities = require('../models/hotel.amenities.schema');
-const Highlights = require('../models/hotel.highlight.schema');
-const Certificates = require('../models/hotel.certificate.schema');
-const Member = require('../models/member.schema');
-const {Hotel} = require('../models/hotel.schema');
-
-
+const Category = require('../models/hotel.category.schema')
+const Amenities = require('../models/hotel.amenities.schema')
+const Highlights = require('../models/hotel.highlight.schema')
+const Certificates = require('../models/hotel.certificate.schema')
+const Member = require('../models/member.schema')
+const {Hotel} = require('../models/hotel.schema')
+const Partner = require('../models/partner.schema')
+const jwt = require('jsonwebtoken')
 //get all
 module.exports.GetAll = async (req,res) =>{
     try {
@@ -41,7 +41,13 @@ module.exports.Create = async (req,res)=>{
         if(!category){
             return res.status(404).send({message:'no category'});
         }
-
+        // เรียก token มาดึง partner_id
+        let token = req.headers["token"]
+        const secretKey = "i#ngikanei;#aooldkhfa'"
+        const decoded =  await jwt.verify(token,secretKey)
+        // ทำการดึงข้อมูล id ใน partner
+        const partner = await Partner.findOne({name:decoded.name})
+        
         const hotel = new Hotel({
             host_id:req.body.host_id,
             name: req.body.name,
@@ -64,17 +70,10 @@ module.exports.Create = async (req,res)=>{
             nearly_place: [],
             parking : req.body.parking,
             property_policies: req.body.property_policies,
-            other_information : req.other_information
+            other_information : req.other_information,
+            partner_id:partner._id 
         })
         const add = await hotel.save()
-       
-        //update user service
-        // userService = {
-        //     service_name:'hotel',
-        //     service_id:add._id,
-        // }
-        // //รอทำต่อครับ
-        // updateservice = await Member.findByIdAndUpdate(req.body.host_id,userService,{returnOriginal:false})
         return res.status(200).send({status:true,data:add})
 
 
@@ -199,4 +198,3 @@ module.exports.Delete = async (req,res) =>{
         return res.status(500).send({message:error});
     }
 }
-

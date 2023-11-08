@@ -19,26 +19,26 @@ var apiPartnerAuth = require('../authentication/apiPartnerAuth')
 //สร้าง 
 router.post('/',memberAuth.verifyTokenmember,Booking.addbooking)
 //เรียกข้อมูลการจอง
-router.get('/',partnerAuth.verifyTokenpartner,Booking.GetAll)
+router.get('/',memberAuth.all,Booking.GetAll)
 //เรียกข้อมูลการจอง ตาม id
-router.get('/:id',Booking.GetByid)
+router.get('/:id',memberAuth.all,Booking.GetByid)
 //เรียกข้อมูลการจองตาม hotel_id
-router.get('/hotel/:id',Booking.GetByhotel)
+router.get('/hotel/:id',memberAuth.all,Booking.GetByhotel)
 //เรียกข้อมูลการจองตาม room_id
-router.get('/room/:id',Booking.GetByroom)
+router.get('/room/:id',memberAuth.all,Booking.GetByroom)
 //เรียกข้อมูลการจอง ตาม member id
-router.get('/member/:id',Booking.GetBymember)
+router.get('/member/:id',memberAuth.all,Booking.GetBymember)
 
 //อนุมัติการจองห้อง
-router.put('/AcceptBooking/:id',Booking.AcceptBooking)
+router.put('/AcceptBooking/:id',partnerAuth.onlypartner,Booking.AcceptBooking)
 //ไม่อนุมัติการจองห้อง
-router.put('/UnacceptBooking/:id',Booking.unacceptbooking)
+router.put('/UnacceptBooking/:id',partnerAuth.onlypartner,Booking.unacceptbooking)
 //จ่ายเงิน
-router.put('/paymentBooking/:id',Booking.Payment)
+router.put('/paymentBooking/:id',memberAuth.verifyTokenmember,Booking.Payment)
 //ยืนยันการจ่ายเงิน
-router.put('/confirmBookingPayment/:id',Booking.confirmbookingpayment)
+router.put('/confirmBookingPayment/:id',partnerAuth.onlypartner,Booking.confirmbookingpayment)
 //ไม่ยืนยันการจ่ายเงิน
-router.put('/Unconfirmbookingpayment/:id',Booking.unconfirmbookingpayment)
+router.put('/Unconfirmbookingpayment/:id',partnerAuth.onlypartner,Booking.unconfirmbookingpayment)
 
 
 module.exports = router;

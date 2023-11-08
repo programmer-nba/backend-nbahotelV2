@@ -25,6 +25,7 @@ const hotelSchema = new mongoose.Schema({
     parking : { type: Boolean,default: false },
     property_policies: { type: String},
     other_information : { type: String},
+    partner_id:{type: mongoose.Schema.Types.ObjectId,ref:'Partner',required:true},
     approved:{type: Boolean,default: false}
   });
   

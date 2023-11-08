@@ -25,6 +25,48 @@ verifyTokenmember = async (req,res,next) => {
 }
 
 
+memberandpartner = async (req,res,next) => {
+    try{
+
+        let token = req.headers["token"]
+        const secretKey = "i#ngikanei;#aooldkhfa'"
+        //เช็ค token
+        if(!token){
+            return res.status(403).send({status:false,message:'token หมดอายุ'});
+        }
+        
+        // ทำการยืนยันสิทธิ์ token
+        const decoded =  await jwt.verify(token,secretKey)
+        if(decoded.roles ==="member"||decoded.roles ==="partner"){
+            req.users = decoded.data
+            next()    
+        }
+    }catch (err){
+        console.log(err)
+        return res.status(500).send({error:err})
+    }
+}
+
+all = async (req,res,next) => {
+    try{
+
+        let token = req.headers["token"]
+        const secretKey = "i#ngikanei;#aooldkhfa'"
+        //เช็ค token
+        if(!token){
+            return res.status(403).send({status:false,message:'token หมดอายุ'});
+        }
+        
+        // ทำการยืนยันสิทธิ์ token
+        const decoded =  await jwt.verify(token,secretKey)
+        req.users = decoded.data
+        next()    
+    }catch (err){
+        console.log(err)
+        return res.status(500).send({error:err})
+    }
+}
+
 // isAdmin = (req,res,next)=>{
 //     Admin.findById(req.UserId).exec((err,user)=>{
 //         if(err){
@@ -49,7 +91,9 @@ verifyTokenmember = async (req,res,next) => {
 // };
 
 const authJwt = {
-    verifyTokenmember
+    verifyTokenmember,
+    memberandpartner,
+    all
 };
 
 module.exports = authJwt;

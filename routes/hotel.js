@@ -45,13 +45,14 @@ router.delete('/certificate/:id',adminAuth,Certificate.Delete)
 //จัดการข้อมูลโรงแรม
 router.get('/',Hotel.GetAll)
 router.get('/:id',partnerAuth.verifyTokenpartner,Hotel.GetById)
-router.post('/:id',partnerAuth.verifyTokenpartner, Hotel.Create)
-router.patch('/:id/:userId',partnerAuth.verifyTokenpartner,Hotel.Update)
-router.delete('/:id',adminAuth,Hotel.Delete)
+router.post('/',partnerAuth.onlypartner, Hotel.Create)
+router.patch('/:id',partnerAuth.onlypartner,Hotel.Update)
+router.delete('/:id',partnerAuth.onlypartner,Hotel.Delete)
 
 // //picture management เพิ่ม - ลบ รูปโรงแรม
 router.post('/:id/picture',partnerAuth.verifyTokenpartner,Picture.Create)
 router.delete('/:id/picture/:pictureid',partnerAuth.verifyTokenpartner,Picture.Delete)
+
 
 
 
