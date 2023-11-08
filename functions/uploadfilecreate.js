@@ -56,7 +56,7 @@ async function generatePublicUrl(res) {
       fileId: fileId,
       fields: "webViewLink, webContentLink",
     });
-    // console.log(result.data);
+    console.log(result.data);
   } catch (error) {
     console.log(error.message);
   }
