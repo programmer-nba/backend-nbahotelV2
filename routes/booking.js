@@ -16,6 +16,9 @@ var apiPartnerAuth = require('../authentication/apiPartnerAuth')
 // router.patch('/accept/:id/:bookingId',partnerAuth.verifyTokenpartner,Booking.Accept);
 // router.patch('/reject/:id/:bookingId',partnerAuth.verifyTokenpartner,Booking.Reject);
 
+
+
+
 //สร้าง 
 router.post('/',memberAuth.verifyTokenmember,Booking.addbooking)
 //เรียกข้อมูลการจอง

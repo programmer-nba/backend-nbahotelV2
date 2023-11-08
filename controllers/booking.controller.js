@@ -11,9 +11,10 @@ const ValidateDate = require('../functions/datemangement')
 const jwt = require('jsonwebtoken');
 // เรียกใช้ฟังกชั่น
 const addgoogledrive = require('../functions/uploadfilecreate')
+//ดึงข้อมูล ใน form-data ได้
 const multer = require('multer')
 const storage = multer.memoryStorage() // เก็บข้อมูลไฟล์ในหน่วยความจำ
-const upload = multer({ storage })
+
 //สร้างข้อมูลการจอง
 module.exports.addbooking = async(req,res)=>{
     try{
@@ -180,6 +181,10 @@ module.exports.unacceptbooking = async (req,res)=>{
 }
 
 
+
+
+
+
 //member ชำระเงิน
 module.exports.Payment = async (req,res) =>{
     try{
@@ -193,15 +198,42 @@ module.exports.Payment = async (req,res) =>{
         if(!bookingdata){
             return res.status(404).send({status:false,message:"id ที่ส่งมาไม่มีในข้อมูล Booking"})
         }
-        
         // เพิ่มหลักฐานการจ่ายเงิน          
         const booking_id = bookingdata._id
         const total_amount = bookingdata.price
-        //const slip_image =   addgoogledrive.uploadFileCreate(req.body.slip_image)
-        const test = req.file
-        console.log(test)
+
+        // สร้าง middleware
+        let upload = multer({storage:storage}).array("slip_image",20)
+        upload(req,res,async(err)=>{
+            const reqFiles = []
+            //console.log(req.files)
+            //เช็คว่าไฟล์มาไหม
+            if(!req.files){
+                res.status(500).send({message:"มีบางอย่างผิดพลาด",status:false})
+            }else{
+                //ถ้ามา
+
+                const url = req.protocol+"://"+req.get("host")
+                for(var i = 0;i<req.files.length;i++){
+                    await addgoogledrive.uploadFileCreate(req.files,res,{i,reqFiles})
+                    console.log(reqFiles)
+                }
+            }
+            res.status(200).send({
+                message:"สร้างรูปภาพเสร็จแล้ว",
+                status:true,
+                file:reqFiles,
+            })
+        })
+        // const slip_image =  req.file
+        // console.log(slip_image)
         //return res.status(200).send({slip_image:slip_image})
         
+        
+
+
+
+
         
         // //เพิ่มข้อมูล payment
         // const paymentdata = new Payment.PrePayment({

@@ -19,6 +19,7 @@ const drive = google.drive({
 
 async function uploadFileCreate(req, res, { i, reqFiles }) {
     const filePath = req[i].path;
+    console.log(req[0].originalname)
     let fileMetaData = {
       name: req.originalname,
       parents: [process.env.GOOGLE_DRIVE_NBA_HOTEL],
