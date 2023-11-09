@@ -4,6 +4,7 @@ var partnerAuth = require('../authentication/partnerAuth');
 var adminAuth = require('../authentication/adminAuth');
 const Billing = require('../controllers/billing.controller');
 
+//ยังไม่ได้ใช้งาน
 router.post('/',adminAuth,Billing.getAllBilling)
 router.get('/:id',partnerAuth.verifyTokenpartner,Billing.GetBilling);
 router.get('/:id/summary',partnerAuth.verifyTokenpartner,Billing.getBillingSummary)

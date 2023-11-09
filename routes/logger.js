@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 var adminAuth = require('../authentication/adminAuth');
 
+//ยังไม่ได้ใช้
 router.get('/',adminAuth,async (req,res)=>{
     const logger_path = path.join(__dirname,'../log/access.log');
     fs.readFile(logger_path, 'utf8', function (err,result){

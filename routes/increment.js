@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const Increment = require('../models/increment.schema');
 
+//ยังไม่ได้ใช้
 router.post('/',async (req,res) => {
     try {
         

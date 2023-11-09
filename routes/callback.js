@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const {Partner} = require('../models/partner.schema') // api partner
 
+//ยังไม่ได้ใช้
 router.post('/',async (req,res) => {
 
     var axios = require('axios');

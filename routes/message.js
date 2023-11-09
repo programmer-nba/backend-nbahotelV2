@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var adminAuth = require('../authentication/adminAuth');
 
+//ยังไม่ได้ใช้
 //send message
 router.post('/message',adminAuth,(req,res)=>{
     var axios = require('axios');
