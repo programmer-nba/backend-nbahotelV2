@@ -90,14 +90,14 @@ router.delete('/security/:id',adminAuth,RoomSecurity.Delete)
 router.get('/',Room.GetAll)
 router.get('/:id',Room.GetById)
 router.get('/hotel/:id',Room.GetHotelRoom)
-router.get('/hotel/:id/:roomId',Room.GetById)// ยังไม่เข้าใจ
+router.get('/hotel/:id/:roomId',Room.GetById)
 router.post('/hotel/:id',partnerAuth.onlypartner,Room.Create)
 router.patch('/hotel/:id/:roomId/update',partnerAuth.onlypartner,Room.Update)
 router.patch('/hotel/:id/changestatus/:roomId',partnerAuth.onlypartner,Room.ChangeStatus)
 router.delete('/:id',adminAuth,Room.Delete)
 
-// //picture management routes
-router.post('/hotel/:id/:roomId/picture',partnerAuth.onlypartner,Upload.Create)
-router.delete('/hotel/:id/:roomId/picture/:pictureid',partnerAuth.onlypartner,Upload.Delete)
+// //picture management routes  //เหลือแค่รูป
+router.post('/picture/:id',partnerAuth.onlypartner,Upload.Create)
+router.delete('/picture/:id/:pictureid',partnerAuth.onlypartner,Upload.Delete)
 
 module.exports = router;

@@ -12,7 +12,7 @@ var apiPartnerAuth = require('../authentication/apiPartnerAuth')
 // router.get('/:id/:bookingId',partnerAuth.verifyTokenpartner,Booking.getBookingById);
 // router.patch('/:id',partnerAuth.verifyTokenpartner,Booking.Update); // date
 //router.get('/range/:id',Booking.getBookingByRange)
-// //accept
+//accept
 // router.patch('/accept/:id/:bookingId',partnerAuth.verifyTokenpartner,Booking.Accept);
 // router.patch('/reject/:id/:bookingId',partnerAuth.verifyTokenpartner,Booking.Reject);
 

@@ -27,7 +27,7 @@ router.get('/',adminAuth, async(req,res)=>{
 router.get('/:id',memberAuth.verifyTokenmember, async(req,res)=>{
     try{
         const id = req.params.id
-        const memberdata = await Member.findOne({id:id})
+        const memberdata = await Member.findOne({_id:id})
         if(!memberdata){
             return res.status(404).send({status:false,message:"ไม่มีข้อมูล member"})
         }
@@ -41,7 +41,7 @@ router.get('/:id',memberAuth.verifyTokenmember, async(req,res)=>{
 router.get('/admin/:id',memberAuth.verifyTokenmember, async(req,res)=>{
     try{
         const id = req.params.id
-        const memberdata = await Member.findOne({id:id})
+        const memberdata = await Member.findOne({_id:id})
         if(!memberdata){
             return res.status(404).send({status:false,message:"ไม่มีข้อมูล member"})
         }

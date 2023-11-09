@@ -11,10 +11,7 @@ const storage = multer.diskStorage({
 
 module.exports.Create = async (req, res) => {
     console.log(req.body);
-    const id = req.params.roomId;
-
-    console.log('id',id);
-
+    const id = req.params.id
     try {
 
     const room = await Room.findById(id);
@@ -24,7 +21,6 @@ module.exports.Create = async (req, res) => {
     
     let upload = multer({ storage: storage }).array("imgCollection", 20);
     upload(req, res, async function (err) {
-      console.log(req);
       const reqFiles = [];
       const result=[];
 
@@ -44,16 +40,16 @@ module.exports.Create = async (req, res) => {
 
         }
 
+        let edit = ""
         if(result){
-
-            const data = room.imageURl.concat(reqFiles);
-
-            await Room.findByIdAndUpdate(id,{imageURl:data},{returnOriginal:false})
+          const data = room.imageURl.concat(reqFiles);
+          edit = await Room.findByIdAndUpdate(id,{imageURl:data},{returnOriginal:false})
         }
 
         res.status(201).send({
           message: "สร้างรูปภาพเสร็จเเล้ว",
           status: true,
+          room: edit ,
           file: reqFiles,
           result:result
         });
@@ -67,7 +63,7 @@ module.exports.Create = async (req, res) => {
 //delete
 module.exports.Delete = async (req,res) =>{
 
-  const roomid = req.params.roomId;
+  const roomid = req.params.id;
   const pictureid = req.params.pictureid;
 
   try {

@@ -15,7 +15,6 @@ module.exports.Create = async (req, res) => {
     const id = req.params.id;
     try {
     const hotel = await Hotel.findById(id);
-
     if(!hotel){
       return res.status(404).send(`Hotel id ${id} not found`);
     }
@@ -35,17 +34,18 @@ module.exports.Create = async (req, res) => {
         
           //   reqFiles.push(url + "/public/" + req.files[i].filename);
         }
-
+        let edit = ""
         if(result){
           const data = hotel.image_url.concat(reqFiles);
-          Hotel.findByIdAndUpdate(id,{image_url:data},{returnOriginal:false})
+          edit = await Hotel.findByIdAndUpdate(id,{image_url:data},{returnOriginal:false})
         }
 
         res.status(201).send({
           message: "สร้างรูปภาพเสร็จเเล้ว",
           status: true,
+          hotel:edit,
           file: reqFiles,
-          result:result
+          result:result,
         });
       }
     });
@@ -69,7 +69,7 @@ module.exports.Delete = async (req,res) => {
   }
 
   await deleteFile(pictureid);
-  const updatedata = hotel.image_url.filter(image => image !== pictureid);
+  const updatedata = hotel.image_url.filter(image => image !== pictureid)
   await Hotel.findByIdAndUpdate(hotelid,{image_url:updatedata},{returnOriginal:false})
   return res.status(200).send(hotel.image_url)
 

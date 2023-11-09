@@ -31,7 +31,7 @@ router.get('/',adminAuth, async(req,res)=>{
 router.get('/:id',paramsAuth.verifyTokenpartner, async(req,res)=>{
     try{
         const id = req.params.id
-        const partnerdata = await Partner.findOne({id:id})
+        const partnerdata = await Partner.findOne({_id:id})
 
         if(!partnerdata){
             return res.status(404).send({status:false,message:"หาข้อมูลไม่เจอ partner"})

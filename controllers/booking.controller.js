@@ -75,7 +75,7 @@ module.exports.GetAll = async (req, res) => {
 module.exports.GetByid = async (req, res) => {
   try {
     const id = req.params.id;
-    const booking = await Booking.findOne({id: id})
+    const booking = await Booking.findOne({_id: id})
       .populate("member_id")
       .populate({
         path: "room_id",
@@ -323,25 +323,25 @@ module.exports.confirmbookingpayment = async (req, res) => {
 
 // partner ไม่ยืนยันการชำระเงิน
 module.exports.unconfirmbookingpayment = async (req, res) => {
-  const payment_id = req.params.id;
+  const payment_id = req.params.id
   //เพิ่มสถานะ
   const newStatus = {
     statusbooking: "ชำระเงินไม่สำเร็จ",
     timestamps: new Date(),
   };
-
-  //ทำใหม่่
-  const findbooking = await Payment.PrePayment.findOne({id: payment_id});
+  //หาข้อมูล booking id
+  const findbooking = await Payment.PrePayment.findOne({_id:payment_id})
+  if(!findbooking){
+    return res.status(404).send({status: false, message: "id ที่ส่งมาไม่มีในข้อมูล Payment_id"})
+  }
   //เพิ่มสถานะ booking
   const editbooking = await Booking.findByIdAndUpdate(
     {_id: findbooking.booking_id},
     {$push: {status: newStatus}},
     {new: true}
-  );
+  )
   if (!editbooking) {
-    return res
-      .status(404)
-      .send({status: false, message: "id ที่ส่งมาไม่มีในข้อมูล Booking"});
+    return res.status(404).send({status: false, message: "id ที่ส่งมาไม่มีในข้อมูล Booking"})
   }
   return res.status(200).send({
     status: true,

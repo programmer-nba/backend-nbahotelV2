@@ -68,6 +68,7 @@ async function generatePublicUrl(res) {
  * @param {String} fileId ID of the file to delete.
  */
 async function deleteFile(fileId) {
+
   const res = await drive.files.delete({
     // Deprecated. If an item is not in a shared drive and its last parent is deleted but the item itself is not, the item will be placed under its owner's root.
     enforceSingleParent: true,
